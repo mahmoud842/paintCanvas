@@ -36,7 +36,7 @@ function App() {
       shapes.current.push(shapeRef.current)
       console.log(shapes.current.length)
       shapeRef.current.setStartPoint(mouseX, mouseY)
-      console.log("starting point: " + mouseX + " " + mouseY)
+      // console.log("starting point: " + mouseX + " " + mouseY)
     };
 
     const draw = (e) => {
@@ -44,7 +44,7 @@ function App() {
       const mouseX = e.offsetX
       const mouseY = e.offsetY
       shapeRef.current.setEndPoint(mouseX, mouseY)
-      shapes.current[shapes.current.length - 1] = shapeRef.current
+      shapes.current[shapes.current.length - 1] = shapeRef.current.clone()
       renderCanva(canva)
     };
 

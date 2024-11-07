@@ -77,7 +77,7 @@ class Rectangle extends Shape {
     }
 
     draw(canva) {
-        console.log("draw: " + this.x + " " + this.y + " " + this.width + " " + this.height + " " + this.thickness + " " + this.color);
+        // console.log("draw: " + this.x + " " + this.y + " " + this.width + " " + this.height + " " + this.thickness + " " + this.color);
         canva.strokeStyle = this.color;
         canva.lineWidth = this.thickness;
         canva.strokeRect(this.x, this.y, this.width, this.height);
