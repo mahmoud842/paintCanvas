@@ -77,6 +77,7 @@ class Line extends Shape{
 class Triangle extends Polygon{
 
 }
+
 class ShapeFactory {
     createShape(name) {
         if (name === "rectangle") {

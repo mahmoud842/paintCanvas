@@ -1,6 +1,5 @@
-import {  useRef, useState, useEffect } from 'react'
+import {  useRef, useEffect } from 'react'
 import ShapeFactory from './classes'
-
 
 function App() {
 
@@ -9,11 +8,19 @@ function App() {
   const shapeRef = useRef(null)
   const shapeSelectedRef = useRef(false)
   const shapeFactoryRef = useRef(null)
+  const shapes = useRef([])
 
   const selectShape = (shapeType) => {
     shapeSelectedRef.current = true;
     shapeRef.current = shapeFactoryRef.current.createShape(shapeType)
     console.log("shape " + shapeType + " selected")
+  }
+
+  const renderCanva = (canva) => {
+    canva.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+    for (let i = 0; i < shapes.current.length; i++) {
+      shapes.current[i].draw(canva)
+    }
   }
 
   useEffect(() => {
@@ -23,10 +30,12 @@ function App() {
     const startDrawing = (e) => {
       if (!shapeSelectedRef.current)
         return;
+      isDrawingRef.current = true
       const mouseX = e.offsetX
       const mouseY = e.offsetY
+      shapes.current.push(shapeRef.current)
+      console.log(shapes.current.length)
       shapeRef.current.setStartPoint(mouseX, mouseY)
-      isDrawingRef.current = true
       console.log("starting point: " + mouseX + " " + mouseY)
     };
 
@@ -34,21 +43,15 @@ function App() {
       if (!isDrawingRef.current) return
       const mouseX = e.offsetX
       const mouseY = e.offsetY
-      canva.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
       shapeRef.current.setEndPoint(mouseX, mouseY)
-      shapeRef.current.draw(canva)
+      shapes.current[shapes.current.length - 1] = shapeRef.current
+      renderCanva(canva)
     };
 
     const stopDrawing = (e) => {
       if (!shapeSelectedRef.current || !isDrawingRef.current)
         return
-      // const mouseX = e.offsetX
-      // const mouseY = e.offsetY
       isDrawingRef.current = false
-      // console.log("ending point: " + mouseX + " " + mouseY)
-      // shapeRef.current.setEndPoint(mouseX, mouseY)
-      // shapeRef.current.draw(canva)
-      shapeSelectedRef.current = false;
     };
 
     canvasRef.current.addEventListener('mousedown', startDrawing)
