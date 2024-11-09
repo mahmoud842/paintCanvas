@@ -68,7 +68,7 @@ class Shape {
 
 class Rectangle extends Shape {
     constructor() {
-        super(); 
+        super();
     }
 
     setStartPoint(x, y) {
