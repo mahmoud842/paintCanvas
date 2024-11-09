@@ -14,6 +14,7 @@ class Shape {
     clear(canva) {
         canva.clearRect(this.x, this.y, this.width, this.height);
     }
+    
 
     setColor(color) {
         this.color = color;
@@ -32,7 +33,7 @@ class Shape {
         this.endy = y;
         this.updateSize();
         this.updatePosition();
-        console.log("end: " + this.x + " " + this.y + " " + this.width + " " + this.height + " " + this.thickness + " " + this.color);
+        //console.log("end: " + this.x + " " + this.y + " " + this.width + " " + this.height + " " + this.thickness + " " + this.color);
     }
 
     updateSize() {
@@ -64,11 +65,22 @@ class Shape {
 
         return copy;
     }
+    move(dx,dy){
+        this.endx+=dx
+        this.endy+=dy
+        this.startx+=dx
+        this.starty+=dy
+        this.updateSize();
+        this.updatePosition();
+    }
+    isSelected(x,y){
+        throw new Error("The isSelected method must be implemented in a subclass");
+    }
 }
 
 class Rectangle extends Shape {
     constructor() {
-        super();
+        super(); 
     }
 
     setStartPoint(x, y) {
@@ -92,6 +104,28 @@ class Rectangle extends Shape {
         this.x = this.startx;
         this.y = this.starty;
     }
+    _isBetween(value, min, max) {
+        return value >= Math.min(min, max) && value <= Math.max(min, max);
+    }
+
+    // Method to check if a point (x, y) is within the rectangle
+    isSelected(x, y) {
+        
+        if (this.thickness >= Math.abs(this.starty-y) && this._isBetween(x, this.startx, this.endx )) {
+            return true;
+        }
+        if (this.thickness >= Math.abs(this.endy-y) && this._isBetween(x, this.endx, this.startx )) {
+            return true;
+        }
+        if (this.thickness >= Math.abs(this.startx-x) && this._isBetween(y, this.starty, this.endy)) {
+            return true;
+        }
+        if (this.thickness >= Math.abs(this.endx-x) && this._isBetween(y, this.endy, this.starty )) {
+            return true;
+        }
+        return false;
+    }
+
 }
 class Polygon extends Shape{
 
