@@ -1,8 +1,57 @@
 /* App.css */
+.page {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 150px;
+  height: 90vh;
+  border-radius: 30px;
+  background-color:  #93c5724d;
+  padding: 20px;
+  transition: transform 0.3s ease;
+}
+
+.sidebar.show {
+  display: block;
+}
+
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+}
+
+.appContainer.sidebarVisible {
+  margin-left: 200px;
+}
+
+.shapesContainer {
+  display: flex;
+  gap: 1px;
+  margin-bottom: 1px;
+}
+
+#canvas {
+  border: 1px solid rgb(34, 96, 56);
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+/* The Shapes Buttons */
 .button {
-    padding: 10px 20px;
-    margin: 4px 2px;
-    background-color: #93c572; /* Pistachio green color */
+    padding: 8px 11px;
+    margin: 3px 2px;
+    background-color: #93c572;
     color: white;
     border: none;
     border-radius: 20px;
@@ -10,32 +59,98 @@
     font-size: 14px;
     font-weight: bold;
     text-transform: uppercase;
-
-    /* Elegant shadows and soft glow for a refined pistachio look */
-    box-shadow: 
-      0 4px 8px rgba(0, 0, 0, 0.2), /* Basic shadow */
-      0 0 12px rgba(147, 197, 114, 0.5), /* Soft pistachio outer glow */
-      inset 0 0 8px rgba(255, 255, 255, 0.3), /* Inner soft reflection */
-      0 0 6px rgba(255, 255, 255, 0.2); /* Subtle inner shimmer */
-
+    box-shadow:
+      0 4px 8px rgba(0, 0, 0, 0.2),
+      0 0 12px rgba(147, 197, 114, 0.5),
+      inset 0 0 8px rgba(255, 255, 255, 0.3),
+      0 0 6px rgba(255, 255, 255, 0.2);
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
 }
-
 .button:hover {
-    transform: translateY(-3px); /* Lift on hover */
-    background-color: #81b05a; /* Slightly darker pistachio on hover */
-    box-shadow: 
-      0 6px 12px rgba(0, 0, 0, 0.3), /* Darker shadow */
-      0 0 18px rgba(147, 197, 114, 0.7), /* Stronger pistachio outer glow */
-      inset 0 0 10px rgba(255, 255, 255, 0.4), /* Brighter inner shine */
-      0 0 8px rgba(255, 255, 255, 0.3); /* Extra shimmer on hover */
+    transform: translateY(-3px);
+    background-color: #81b05a;
+    box-shadow:
+      0 6px 12px rgba(0, 0, 0, 0.3),
+      0 0 18px rgba(147, 197, 114, 0.7),
+      inset 0 0 10px rgba(255, 255, 255, 0.4),
+      0 0 8px rgba(255, 255, 255, 0.3);
 }
-
 .button:active {
-    transform: translateY(2px); /* Pressed-down effect */
-    box-shadow: 
+    transform: translateY(2px);
+    box-shadow:
       0 4px 8px rgba(0, 0, 0, 0.2),
       0 0 12px rgba(147, 197, 114, 0.5),
       inset 0 0 6px rgba(255, 255, 255, 0.3),
       0 0 5px rgba(255, 255, 255, 0.2);
 }
+
+.opButton {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #93c572;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.opButton:hover {
+  background-color: #b0cf82;
+}
+
+.colorList {
+  position: absolute;
+  margin-top: 5px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border: 1px solid #ddd;
+  background-color: white;
+  max-width:100px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.colorOption {
+  padding: 5px;
+  margin: 2px 0;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+  transition: background-color 0.3s;
+  font-weight: bold;
+  text-align: center;
+  width:100%;
+}
+
+.colorOption:hover {
+  background-color: #f0f0f0;
+  transform: scale(1.05);
+}
+
+.thicknessInput {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.thicknessInput:focus {
+  border-color: #4CAF50;
+}
+
+.thicknessInput::placeholder {
+  color: #888;
+  font-style: italic;
+}
+
+

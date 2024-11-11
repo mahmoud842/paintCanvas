@@ -13,6 +13,8 @@ class Rectangle extends Shape {
     draw(canva) {
         canva.strokeStyle = this.color;
         canva.lineWidth = this.thickness;
+        canva.fillStyle = this.backcolor;                        //230
+        canva.fillRect(this.x, this.y, this.width, this.height)  //230
         canva.strokeRect(this.x, this.y, this.width, this.height);
     }
 

@@ -10,6 +10,7 @@ class Shape {
         this.width = 1;
         this.height = 1;
         this.color = 'black';
+        this.backcolor = 'transparent';  //230
         this.thickness = 4;
     }
     clear(canva) {
@@ -26,6 +27,10 @@ class Shape {
 
     setThick(thickness) {
         this.thickness = thickness;
+    }
+
+    setBackColor(backcolor){       //230
+        this.backcolor = backcolor;//230
     }
 
     draw(canva) {
@@ -78,7 +83,6 @@ class Shape {
         this.updatePosition();
     }
     isSelected(x,y){
-       
     }
 }
-export default Shape; 
+export default Shape;

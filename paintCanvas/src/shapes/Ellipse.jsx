@@ -30,7 +30,9 @@ class Ellipse extends Shape{
         canva.ellipse(this.centerx, this.centery, this.rx, this.ry, this.rotation, this.startAngle, this.endAngle);
         canva.lineWidth = this.thickness;
         canva.strokeStyle = this.color;
-        canva.stroke(); 
+        canva.fillStyle = this.backcolor;
+        canva.fill();
+        canva.stroke();
     }
     
     clone() {

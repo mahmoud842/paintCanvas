@@ -34,6 +34,8 @@ class Triangle extends Shape {
         canva.moveTo(this.v1x, this.v1y);
         canva.lineTo(this.v2x, this.v2y);
         canva.lineTo(this.v3x, this.v3y);
+        canva.fillStyle = this.backcolor;
+        canva.fill()
         canva.closePath();
         canva.strokeStyle = this.color;
         canva.lineWidth = this.thickness;
