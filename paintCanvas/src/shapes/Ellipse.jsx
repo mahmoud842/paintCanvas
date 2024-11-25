@@ -34,29 +34,6 @@ class Ellipse extends Shape{
         canva.fill();
         canva.stroke();
     }
-    
-    clone() {
-        // Create a new instance of the current class
-        const copy = new this.constructor(); // this.constructor ensures the correct class type
-
-        // Copy all properties
-        copy.startx = this.startx;
-        copy.starty = this.starty;
-        copy.endx = this.endx;
-        copy.endy = this.endy;
-        copy.rx = this.rx;
-        copy.ry = this.ry;
-        copy.rotation = this.rotation;
-        copy.startAngle = this.startAngle;
-        copy.endAngle = this.endAngle;
-        copy.anticlockwise = this.anticlockwise;
-        copy.color = this.color;
-        copy.thickness = this.thickness;
-        copy.centerx = this.centerx;
-        copy.centery = this.centery;
-
-        return copy;
-    }
 
     organize() {
         throw new Error("The organize method must be implemented in a subclass");

@@ -1,88 +1,141 @@
-
 class Shape {
     constructor() {
-        this.startx = 0;
-        this.starty = 0;
-        this.endx = 1;
-        this.endy = 1;
-        this.x = 0;
-        this.y = 0;
-        this.width = 1;
-        this.height = 1;
-        this.color = 'black';
-        this.backcolor = 'transparent';  //230
-        this.thickness = 4;
+        // start and end are only used when drawing the shape for the first time
+        this.start = [0, 0]
+        this.end = [0, 0]
+        this.center = [0, 0]
+        this.color = 'black'
+        this.backgroundColor = 'transparent'
+        this.thickness = 4
+        this.focused = false
+        this.editMode = -1 // each shape will have his own editable modes but 0 is move for all of them
     }
+
     clear(canva) {
         canva.clearRect(this.x, this.y, this.width, this.height);
-    }
-    setStartPoint(x, y) {
-        this.startx = x;
-        this.starty = y;
     }
 
     setColor(color) {
         this.color = color;
     }
 
-    setThick(thickness) {
+    setThickness(thickness) {
         this.thickness = thickness;
     }
 
-    setBackColor(backcolor){       //230
-        this.backcolor = backcolor;//230
+    setBackgroundColor(color){       
+        this.backgroundColor = color;
     }
 
     draw(canva) {
         throw new Error("The draw method must be implemented in a subclass");
     }
 
+    setStartPoint(x, y) {
+        this.start = [x, y]
+    }
+
     setEndPoint(x, y) {
-        this.endx = x;
-        this.endy = y;
-        this.updateSize();
-        this.updatePosition();
-        //console.log("end: " + this.x + " " + this.y + " " + this.width + " " + this.height + " " + this.thickness + " " + this.color);
+        this.end = [x, y]
+        this.updateShape()
     }
 
-    updateSize() {
-        // Adjust size based on the start and end points
-        this.width = Math.abs(this.endx - this.startx);
-        this.height = Math.abs(this.endy - this.starty);
+    updateShape() {
+        throw new Error("The updateShape method must be implemented")
     }
 
-    updatePosition() {
-        // Adjust position based on start point (starting from the bottom-left corner)
-        this.x = this.startx;
-        this.y = this.starty - this.height; // Adjust y to make start point the bottom-left corner
-    }
-    clone() {
-        // Create a new instance of the current class
-        const copy = new this.constructor(); // this.constructor ensures the correct class type
-
-        // Copy all properties
-        copy.startx = this.startx;
-        copy.starty = this.starty;
-        copy.endx = this.endx;
-        copy.endy = this.endy;
-        copy.x = this.x;
-        copy.y = this.y;
-        copy.width = this.width;
-        copy.height = this.height;
-        copy.color = this.color;
-        copy.thickness = this.thickness;
-
-        return copy;
-    }
     move(dx,dy){
-        this.endx+=dx
-        this.endy+=dy
-        this.startx+=dx
-        this.starty+=dy
-        this.updateSize();
-        this.updatePosition();
+        throw new Error("The move method must be implemented")
     }
+
     isSelected(x,y){
+        throw new Error("The isSelected method must be implemented")
+    }
+
+    selectionMode(){
+        throw new Error("The selectionMode method must be implemented")
+    }
+
+    focus(){
+        this.focused = true
+    }
+
+    unfocus(){
+        this.focused = false
+    }
+
+    drawIndicatorCircle(canva, center){
+        const radius = 4
+        canva.beginPath()
+        canva.arc(center[0], center[1], radius, 0, 2 * Math.PI)
+        canva.fillStyle = 'white'
+        canva.fill()
+        canva.strokeStyle = 'blue'
+        canva.lineWidth = 2
+        canva.stroke()
+    }
+
+    CheckInsideIndicatorCircle(center, point){
+        // Calculate the squared distance between the point and the circle's center
+        const distanceSquared = (point[0] - center[0]) ** 2 + (point[1] - center[1]) ** 2;
+        const radiusSquared = 4 ** 2;
+
+        // Check if the point is inside the circle
+        return distanceSquared <= radiusSquared;
+    }
+
+    rotatePoint(point, degree) {
+        let rad = degree * (Math.PI / 180)
+        // Step 1: Translate point to origin
+        let translatedX = point[0] - this.center[0];
+        let translatedY = point[1] - this.center[1];
+    
+        // Step 2: Apply rotation
+        let rotatedX = translatedX * Math.cos(rad) - translatedY * Math.sin(rad);
+        let rotatedY = translatedX * Math.sin(rad) + translatedY * Math.cos(rad);
+    
+        // Step 3: Translate back to the original position
+        let newX = rotatedX + this.center[0];
+        let newY = rotatedY + this.center[1];
+    
+        return [newX, newY];
+    }
+
+    angleBetweenVectors(p1, p2) {
+        let x1 = p1[0]
+        let x2 = p2[0]
+        let y1 = p1[1]
+        let y2 = p2[1]
+        // Step 1: Compute the dot product
+        let dotProduct = x1 * x2 + y1 * y2;
+    
+        // Step 2: Compute the magnitudes
+        let magnitude1 = Math.sqrt(x1 ** 2 + y1 ** 2);
+        let magnitude2 = Math.sqrt(x2 ** 2 + y2 ** 2);
+    
+        // Step 3: Compute the cosine of the angle
+        let cosTheta = dotProduct / (magnitude1 * magnitude2);
+    
+        // Step 4: Compute the angle in radians
+        let angleRadians = Math.acos(cosTheta);
+    
+        // Step 5: Determine the sign of the angle using the cross product
+        let crossProduct = x1 * y2 - y1 * x2;
+    
+        let angleWithSign = angleRadians;
+        if (crossProduct < 0) {
+            // If cross product is negative, angle is negative (clockwise)
+            angleWithSign = -angleWithSign;
+        }
+    
+        // Return the angle in radians and its sign (positive or negative)
+        return angleWithSign * (180 / Math.PI)
+    }
+
+    getVector(p2, p1) {
+        let vx = p2[0] - p1[0]; // x-component of the vector
+        let vy = p2[1] - p1[1]; // y-component of the vector
+        return [vx, vy];
     }
 }
 export default Shape;

@@ -3,69 +3,145 @@ import Shape from './Shape'
 class Triangle extends Shape {
     constructor() {
         super();
-        this.v1x = 0
-        this.v1y = 0
-        this.v2x = 0
-        this.v2y = 0
-        this.v3x = 0
-        this.v3y = 0
+        this.v1 = [0, 0]
+        this.v2 = [0, 0]
+        this.v3 = [0, 0]
     }
     
-    updatePosition(x, y) {
-        if (x == null && y == null){
-            // calculate the 3 vertices positions based on start and end
-            let upLeftx = Math.min(this.startx, this.endx)
-            let upLefty = Math.min(this.starty, this.endy)
-            let botRightx = Math.max(this.startx, this.endx)
-            let botRighty = Math.max(this.starty, this.endy)
-            this.v1x = upLeftx
-            this.v1y = botRighty
-            this.v3x = botRightx
-            this.v3y = botRighty
-            this.v2x = Math.floor((upLeftx + botRightx) / 2)
-            this.v2y = upLefty
-            this.centerx = Math.floor((this.startx + this.endx) / 2)
-            this.centery = Math.floor((this.starty + this.endy) / 2)
-        }
+    setCenter(){
+        this.center[0] = (this.v1[0] + this.v2[0] + this.v3[0]) / 3
+        this.center[1] = (this.v1[1] + this.v2[1] + this.v3[1]) / 3
+    }
+
+    updateShape() {
+        // calculate the 3 vertices positions based on start and end
+        let upLeftx = Math.min(this.start[0], this.end[0])
+        let upLefty = Math.min(this.start[1], this.end[1])
+        let botRightx = Math.max(this.start[0], this.end[0])
+        let botRighty = Math.max(this.start[1], this.end[1])
+        this.v1 = [upLeftx, botRighty]
+        this.v3 = [botRightx, botRighty]
+        this.v2 = [Math.floor((upLeftx + botRightx) / 2), upLefty]
+        this.setCenter()
     }
 
     draw(canva) {
         canva.beginPath();
-        canva.moveTo(this.v1x, this.v1y);
-        canva.lineTo(this.v2x, this.v2y);
-        canva.lineTo(this.v3x, this.v3y);
-        canva.fillStyle = this.backcolor;
+        canva.moveTo(this.v1[0], this.v1[1]);
+        canva.lineTo(this.v2[0], this.v2[1]);
+        canva.lineTo(this.v3[0], this.v3[1]);
+        canva.fillStyle = this.backgroundColor;
         canva.fill()
         canva.closePath();
         canva.strokeStyle = this.color;
         canva.lineWidth = this.thickness;
         canva.stroke();
-    }
-    
-    clone() {
-        const copy = new this.constructor(); // this.constructor ensures the correct class type
 
-        // Copy all properties
-        copy.startx = this.startx;
-        copy.starty = this.starty;
-        copy.endx = this.endx;
-        copy.endy = this.endy;
-        copy.v1x = this.v1x
-        copy.v1y = this.v1y
-        copy.v2x = this.v2x
-        copy.v2y = this.v2y
-        copy.v3x = this.v3x
-        copy.v3y = this.v3y
-        copy.color = this.color;
-        copy.thickness = this.thickness;
-        copy.centerx = this.centerx;
-        copy.centery = this.centery;
-
-        return copy;
+        if (this.focused){
+            this.drawIndicatorCircle(canva, this.v1)
+            this.drawIndicatorCircle(canva, this.v2)
+            this.drawIndicatorCircle(canva, this.v3)
+        }
     }
 
-    organize() {
-        return
+    isSelected(px, py) {
+        const [x1, y1] = this.v1
+        const [x2, y2] = this.v2
+        const [x3, y3] = this.v3
+
+        // Helper to calculate the perpendicular distance from a point to a line segment
+        function pointToLineDistance(px, py, x1, y1, x2, y2) {
+            const lengthSquared = (x2 - x1) ** 2 + (y2 - y1) ** 2;
+            if (lengthSquared === 0) return Math.sqrt((px - x1) ** 2 + (py - y1) ** 2); // Line segment is a point
+            const t = Math.max(0, Math.min(1, ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / lengthSquared));
+            const projX = x1 + t * (x2 - x1);
+            const projY = y1 + t * (y2 - y1);
+            return Math.sqrt((px - projX) ** 2 + (py - projY) ** 2);
+        }
+
+        // Check if the point is near each side
+        const d1 = pointToLineDistance(px, py, x1, y1, x2, y2);
+        const d2 = pointToLineDistance(px, py, x2, y2, x3, y3);
+        const d3 = pointToLineDistance(px, py, x3, y3, x1, y1);
+
+        return d1 <= this.thickness || d2 <= this.thickness || d3 <= this.thickness;
+    }
+
+    isPointInside(p) {
+        const [x, y] = p
+        const [x1, y1] = this.v1
+        const [x2, y2] = this.v2
+        const [x3, y3] = this.v3
+
+        // Helper function to calculate the area of a triangle given its vertices
+        function triangleArea(x1, y1, x2, y2, x3, y3) {
+            return Math.abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2);
+        }
+
+        // Calculate the area of the triangle ABC
+        const areaABC = triangleArea(x1, y1, x2, y2, x3, y3);
+
+        // Calculate the area of the triangle PAB
+        const areaPAB = triangleArea(x, y, x1, y1, x2, y2);
+
+        // Calculate the area of the triangle PBC
+        const areaPBC = triangleArea(x, y, x2, y2, x3, y3);
+
+        // Calculate the area of the triangle PCA
+        const areaPCA = triangleArea(x, y, x3, y3, x1, y1);
+
+        // Check if the sum of the smaller triangles equals the main triangle's area
+        return Math.abs(areaABC - (areaPAB + areaPBC + areaPCA)) < 1e-10;
+    }
+
+    edit(x, y){
+        if (this.CheckInsideIndicatorCircle(this.v1, [x, y]))
+            this.editMode = 1
+        else if (this.CheckInsideIndicatorCircle(this.v2, [x, y]))
+            this.editMode = 2
+        else if (this.CheckInsideIndicatorCircle(this.v3, [x, y]))
+            this.editMode = 3
+        else if (this.isPointInside([x, y])){
+            this.startEditPoint = [x, y]
+            this.editMode = 0
+        }
+        else return false
+        return true
+    }
+
+    setEndEditPoint(x, y){
+        switch(this.editMode){
+            case 0:
+                this.move((x - this.startEditPoint[0]), (y - this.startEditPoint[1]))
+                this.startEditPoint = [x, y]
+                break
+
+            case 1:
+                this.v1 = [x, y]
+                this.setCenter()
+                break
+            case 2:
+                this.v2 = [x, y]
+                this.setCenter()
+                break
+            case 3:
+                this.v3 = [x, y]
+                this.setCenter()
+                break
+        }
+    }
+
+    move(dx, dy){
+        this.v1[0] += dx
+        this.v1[1] += dy
+        this.v2[0] += dx
+        this.v2[1] += dy
+        this.v3[0] += dx
+        this.v3[1] += dy
+    }
+
+    endEditing(){
+        this.editMode = -1
     }
 }
 

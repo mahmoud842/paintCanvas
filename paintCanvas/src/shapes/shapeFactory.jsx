@@ -4,6 +4,7 @@ import Line from './LineSegment'
 import Triangle from './Triangle'
 import Ellipse from './Ellipse'
 import Circle from './Circle'
+import HandWrite from './HandWrite'
 
 class ShapeFactory {
     createShape(name) {
@@ -20,6 +21,8 @@ class ShapeFactory {
                 return new Ellipse()
             case "circle":
                 return new Circle()
+            case "draw":
+                return new HandWrite()
             default:
                 throw new Error("undefined shape selected");
         }

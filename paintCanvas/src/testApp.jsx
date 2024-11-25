@@ -4,7 +4,7 @@ import Drawing from './drawing'
 import './App.css'
 
 
-function App() {
+function TestApp() {
 
   const canvasRef = useRef(null)
   const isDrawingRef = useRef(false)
@@ -15,7 +15,7 @@ function App() {
   const shapes = useRef([])
   const currentIndexRef = useRef(null)
   const indexRef = useRef(null)
-  const drawing = useRef(null)
+  const drawingRef = useRef(null)
   
   
   const colorListRef = useRef(null);           //230 boolean to show colors list
@@ -88,24 +88,20 @@ function App() {
   ///////////////////230<-end////////////////////////////////////////////
 
   const selectShape = (shapeType) => {
-    shapeSelectedRef.current =  true;
-    shapeRef.current = shapeFactoryRef.current.createShape(shapeType)
+    drawingRef.current.setDrawingMode()
+    drawingRef.current.selectDrawingShape(shapeType)
 
-    sidebarVisibleRef.current = true;             //230 function Show sidebar on shape selection
-    if (sidebarRef.current) {                     //230
-      sidebarRef.current.style.display = 'block'; //230
-    }                                             //230 end
+    // sidebarVisibleRef.current = true;             //230 function Show sidebar on shape selection
+    // if (sidebarRef.current) {                     //230
+    //   sidebarRef.current.style.display = 'block'; //230
+    // }                                             //230 end
   }
 
-  const renderCanva = (canva) => {
+  const renderCanva = (canva, shapes) => {
     canva.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
-    if (currentIndexRef.current === 0) {
-      return;
+    for (let i = 0; i < shapes.length; i++) {
+      shapes[i].draw(canva)
     }
-    for (let i = 0; i < currentIndexRef.current; i++) {
-      shapes.current[i].draw(canva)
-    }
-    
   }
   
   const checkSelection = (x, y) => {
@@ -138,80 +134,34 @@ function App() {
   useEffect(() => {
     const canva = canvasRef.current.getContext('2d')
     shapeFactoryRef.current = new ShapeFactory()
-    //drawing.current = new Drawing()
+    drawingRef.current = new Drawing()
 
-    const mousedown = (e) => {
+    const mouseDown = (e) => {
       const mouseX = e.offsetX
       const mouseY = e.offsetY
-      
-      let {found, index} = checkSelection(mouseX,mouseY)
-      
-      if (found) {
-        //230 shapes.current[index].setColor('');
-        ismovingRef.current =true;
-        indexRef.current = index
-        renderCanva(canva)
-      }else{
-
-        if (!shapeSelectedRef.current)
-          return;
-
-        shapes.current = shapes.current.slice(0, currentIndexRef.current)//2304-->on new shape after undo/redo Slice till currentIndex
-        shapes.current.push(shapeRef.current)
-        currentIndexRef.current = shapes.current.length //2304-->Update currentIndex to the last shape
-
-        shapeRef.current.setStartPoint(mouseX, mouseY)
-        isDrawingRef.current = true
-      }
-    };
-    
-    let oldMouseX = 0;
-    let oldMouseY = 0;
-    const mousemove = (e) => {
-      const mouseX = e.offsetX
-      const mouseY = e.offsetY
-      
-      if (isDrawingRef.current){
-        shapeRef.current.setEndPoint(mouseX, mouseY)
-        shapes.current[shapes.current.length - 1] = shapeRef.current.clone()
-        
-        renderCanva(canva)
-      }else if (ismovingRef.current && indexRef.current !== null) {
-        if (oldMouseX!=0 || oldMouseY!=0)
-          shapes.current[indexRef.current].move(mouseX-oldMouseX, mouseY-oldMouseY)
-        oldMouseX = mouseX;
-        oldMouseY = mouseY;
-        
-        renderCanva(canva)
-      }
+      drawingRef.current.mouseDown(mouseX, mouseY)
     };
 
-    const mouseup = (e) => {
-      if (shapeSelectedRef.current && isDrawingRef.current){
-        isDrawingRef.current = false
-        console.log(currentIndexRef.current)
-      }
-      else{
-        ismovingRef.current = false
-        oldMouseX = 0
-        oldMouseY = 0
-        if(addChangeRef.current == true){
-          shapeOptions(indexRef)         //230 call shape options once selected shape
-        }
-        renderCanva(canva)
-        indexRef.current = null
-        
-      }
+    const mouseMove = (e) => {
+        const mouseX = e.offsetX
+        const mouseY = e.offsetY
+        drawingRef.current.mouseMove(mouseX, mouseY)
+        renderCanva(canva, drawingRef.current.getShapes()) // this is a problem
     };
 
-    canvasRef.current.addEventListener('mousedown', mousedown)
-    canvasRef.current.addEventListener('mousemove', mousemove)
-    canvasRef.current.addEventListener('mouseup', mouseup)
+    const mouseUp = (e) => {
+        drawingRef.current.mouseUp()
+        renderCanva(canva, drawingRef.current.getShapes())
+    };
+
+    canvasRef.current.addEventListener('mousedown', mouseDown)
+    canvasRef.current.addEventListener('mousemove', mouseMove)
+    canvasRef.current.addEventListener('mouseup', mouseUp)
     
     return () => {
-      canvasRef.current.removeEventListener('mousedown', mousedown)
-      canvasRef.current.removeEventListener('mousemove', mousemove)
-      canvasRef.current.removeEventListener('mouseup', mouseup)
+      canvasRef.current.removeEventListener('mousedown', mouseDown)
+      canvasRef.current.removeEventListener('mousemove', mouseMove)
+      canvasRef.current.removeEventListener('mouseup', mouseUp)
     };
   }, [])
 
@@ -272,6 +222,7 @@ function App() {
                 <button className='button' onClick={() => selectShape("circle")}>circle</button>
                 <button className='button' onClick={() => selectShape("ellipse")}>ellipse</button>
                 <button className='button' onClick={() => selectShape("triangle")}>triangle</button>
+                <button className='button' onClick={() => selectShape("draw")}>draw</button>
               </div >
 
               <canvas ref={canvasRef} id="canvas" width="600" height="400" style={{ border: '1px solid black' }}></canvas>
@@ -287,4 +238,4 @@ function App() {
   )
 }
 
-export default App
+export default TestApp
