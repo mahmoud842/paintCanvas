@@ -4,6 +4,7 @@ class Rectangle extends Shape {
     
     constructor() {
         super()
+        this.name = "Rectangle"
         this.borderPoint = []
         this.center = [0, 0]
         this.width = 1
@@ -218,6 +219,26 @@ class Rectangle extends Shape {
 
     endEditing(){
         this.editMode = -1
+    }
+
+    clone(){
+        const copy = new this.constructor();
+        copy.start = [...this.start]
+        copy.end = [...this.end]
+        copy.center = [...this.center]
+        copy.color = this.color
+        copy.backgroundColor = this.backgroundColor
+        copy.thickness = this.thickness
+        copy.focused = false
+        copy.editMode = -1
+        copy.name = this.name
+
+        copy.borderPoint = JSON.parse(JSON.stringify(this.borderPoint))
+        copy.center = [...this.center]
+        copy.width = this.width
+        copy.height = this.height
+        copy.angle = this.angle
+        copy.pPoint = [...this.pPoint]
     }
 }
 

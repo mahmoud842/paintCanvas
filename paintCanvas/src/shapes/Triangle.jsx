@@ -3,6 +3,7 @@ import Shape from './Shape'
 class Triangle extends Shape {
     constructor() {
         super();
+        this.name = "Triangle"
         this.v1 = [0, 0]
         this.v2 = [0, 0]
         this.v3 = [0, 0]
@@ -142,6 +143,24 @@ class Triangle extends Shape {
 
     endEditing(){
         this.editMode = -1
+    }
+
+    clone(){
+        const copy = new this.constructor();
+        copy.start = [...this.start]
+        copy.end = [...this.end]
+        copy.center = [...this.center]
+        copy.color = this.color
+        copy.backgroundColor = this.backgroundColor
+        copy.thickness = this.thickness
+        copy.focused = false
+        copy.editMode = -1
+        copy.name = this.name
+
+        copy.name = this.name
+        copy.v1 = [...this.v1]
+        copy.v2 = [...this.v2]
+        copy.v3 = [...this.v3]
     }
 }
 
