@@ -54,9 +54,9 @@ class Shape {
         throw new Error("The isSelected method must be implemented")
     }
 
-    selectionMode(){
-        throw new Error("The selectionMode method must be implemented")
-    }
+    // selectionMode(){
+    //     throw new Error("The selectionMode method must be implemented")
+    // }
 
     focus(){
         this.focused = true

@@ -3,6 +3,7 @@ import Shape from './Shape'
 class HandWrite extends Shape{
     constructor() {
         super()
+        this.name = "HandWrite"
         this.points = []
         this.maxima = [0,0]
         this.minima = [999999, 999999]
@@ -189,6 +190,28 @@ class HandWrite extends Shape{
 
     endEditing(){
         this.editMode = -1
+    }
+
+    clone(){
+        const copy = new this.constructor();
+        copy.start = this.start
+        copy.end = this.end
+        copy.center = this.center
+        copy.color = this.color
+        copy.backgroundColor = this.backgroundColor
+        copy.thickness = this.thickness
+        copy.focused = false
+        copy.editMode = -1
+        copy.name = this.name
+
+        copy.name = this.name
+        copy.points = JSON.parse(JSON.stringify(this.points))
+        copy.maxima = [...this.maxima]
+        copy.minima = [...this.minima]
+        copy.border1 = [...this.border1]
+        copy.border2 = [...this.border2]
+        copy.pPoint = [...this.pPoint]
+        copy.angle = this.angle
     }
 }
 

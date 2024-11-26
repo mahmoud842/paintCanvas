@@ -1,6 +1,12 @@
 import Shape from './Shape'
 
 class Line extends Shape {
+    constructor() {
+        super()
+        this.name = "LineSegment" // will be used for save/load
+    }
+
+
     draw(canva){
         canva.beginPath();
         canva.moveTo(this.start[0], this.start[1]);
@@ -74,6 +80,19 @@ class Line extends Shape {
 
     endEditing(){
         this.editMode = -1
+    }
+
+    clone(){
+        const copy = new this.constructor();
+        copy.start = this.start
+        copy.end = this.end
+        copy.center = this.center
+        copy.color = this.color
+        copy.backgroundColor = this.backgroundColor
+        copy.thickness = this.thickness
+        copy.focused = false
+        copy.editMode = -1
+        copy.name = this.name
     }
 }
 
