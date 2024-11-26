@@ -1,8 +1,8 @@
 class Shape {
     constructor() {
         // start and end are only used when drawing the shape for the first time
-        this.start = [0, 0]
-        this.end = [0, 0]
+        this.start = null
+        this.end = null
         this.center = [0, 0]
         this.color = 'black'
         this.backgroundColor = 'transparent'
@@ -10,6 +10,8 @@ class Shape {
         this.focused = false
         this.editMode = -1 // each shape will have his own editable modes but 0 is move for all of them
     }
+
+    getEnd() {return this.end}
 
     clear(canva) {
         canva.clearRect(this.x, this.y, this.width, this.height);
@@ -20,7 +22,7 @@ class Shape {
     }
 
     setThickness(thickness) {
-        this.thickness = thickness;
+        this.thickness = Math.max(1, thickness);
     }
 
     setBackgroundColor(color){       
@@ -137,5 +139,14 @@ class Shape {
         let vy = p2[1] - p1[1]; // y-component of the vector
         return [vx, vy];
     }
+
+    getProperties(){
+        return {
+            color : this.color,
+            backgroundColor : this.backgroundColor,
+            thickness : this.thickness
+        }
+    }
+    
 }
 export default Shape;
