@@ -223,9 +223,9 @@ class Rectangle extends Shape {
 
     clone(){
         const copy = new this.constructor();
-        copy.start = this.start
-        copy.end = this.end
-        copy.center = this.center
+        copy.start = [...this.start]
+        copy.end = [...this.end]
+        copy.center = [...this.center]
         copy.color = this.color
         copy.backgroundColor = this.backgroundColor
         copy.thickness = this.thickness
@@ -238,7 +238,7 @@ class Rectangle extends Shape {
         copy.width = this.width
         copy.height = this.height
         copy.angle = this.angle
-        copy.pPoint = this.pPoint
+        copy.pPoint = [...this.pPoint]
     }
 }
 

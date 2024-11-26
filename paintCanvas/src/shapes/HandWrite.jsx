@@ -194,9 +194,9 @@ class HandWrite extends Shape{
 
     clone(){
         const copy = new this.constructor();
-        copy.start = this.start
-        copy.end = this.end
-        copy.center = this.center
+        copy.start = [...this.start]
+        copy.end = [...this.end]
+        copy.center = [...this.center]
         copy.color = this.color
         copy.backgroundColor = this.backgroundColor
         copy.thickness = this.thickness
