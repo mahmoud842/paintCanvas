@@ -109,6 +109,20 @@ class Rectangle extends Shape {
     edit(x, y){
         for (let i = 0; i < 4; i++){
             if (this.CheckInsideIndicatorCircle(this.borderPoint[i], [x, y])){
+                return true
+            }
+        }
+        if (this.CheckInsideIndicatorCircle(this.pPoint, [x, y])){
+            return true
+        }
+        if (this.isPointInside([x, y])){
+            return true
+        }
+    }
+
+    startEdit(x,y){
+        for (let i = 0; i < 4; i++){
+            if (this.CheckInsideIndicatorCircle(this.borderPoint[i], [x, y])){
                 this.editMode = i+1
                 //this.start = this.rotatePoint(this.borderPoint[(i+2) % 4], -this.angle)
                 return true

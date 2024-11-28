@@ -9,11 +9,10 @@ class Drawing {
         this.isDrawing = false
         
         this.shapeFactory = new ShapeFactory()
+        this.shapesUndoStack = []
+        this.shapesRedoStack = []
         this.shapes = []
-        this.shapesCopy = [[]]
-        this.index = 0
         this.selectedShape = null
-        this.element = null
         this.selectedShapeIdx = -1
 
         // default values
@@ -52,26 +51,45 @@ class Drawing {
         return this.shapes
     }
 
-    getShapesCopyUndo(){
-        if(this.index < this.shapesCopy.length-1 && this.index > -1){
-            this.index+=1
-            return this.shapesCopy[this.shapesCopy.length-1-this.index]
-        }else if(this.index == this.shapesCopy.length-1)
-            return this.shapesCopy[0]
-        else{
-            this.index+=1
-            return this.shapesCopy[this.shapesCopy.length-1]
+    pushUndo(arr){
+        this.shapesUndoStack.push(arr)
+    }
+
+    pushRedo(arr){
+        this.shapesRedoStack.push(arr)
+    }
+
+    clearRedo(){
+        this.shapesRedoStack.length = 0
+    }
+
+    undo(){
+        if (this.shapesUndoStack.length > 0){
+            this.pushRedo(this.cloneShapes())
+            this.shapes = this.shapesUndoStack[this.shapesUndoStack.length - 1]
+            this.shapesUndoStack.pop()
         }
     }
-    getShapesCopyRedo(){
-        if(this.index > 1){
-            this.index-=1
-            return this.shapesCopy[this.shapesCopy.length-1-this.index]
-        }else{
-            this.index-=1
-            return this.shapesCopy[this.shapesCopy.length-1]
+
+    redo(){
+        if (this.shapesRedoStack.length > 0){
+            this.pushUndo(this.cloneShapes())
+            this.shapes = this.shapesRedoStack[this.shapesRedoStack.length - 1]
+            this.shapesRedoStack.pop()
         }
-        
+    }
+
+    addShapesToUndo(){
+        this.pushUndo(this.cloneShapes())
+        this.clearRedo()
+    }
+
+    cloneShapes(){
+        let shapesCopy = []
+        for (let i = 0; i < this.shapes.length; i++){
+            shapesCopy.push(this.shapes[i].clone())
+        }
+        return shapesCopy
     }
 
     selectDrawingShape(type){
@@ -96,6 +114,8 @@ class Drawing {
         if (this.selectMode){
             if (this.selectedShape != null){
                 if (this.selectedShape.edit(x, y)){
+                    this.addShapesToUndo()
+                    this.selectedShape.startEdit(x, y)
                     this.isEditing = true
                     return;
                 }
@@ -111,6 +131,7 @@ class Drawing {
             }
         }
         else if (this.drawingMode && this.selectedShape != null){
+            this.addShapesToUndo()
             this.shapes.push(this.selectedShape)
             this.selectedShape.setStartPoint(x, y)
             this.isDrawing = true
@@ -130,58 +151,35 @@ class Drawing {
         if (this.isEditing){
             this.isEditing = false
             this.selectedShape.endEditing()
-            this.cloneShapes()
         }
         else if (this.isDrawing){
             if (this.selectedShape.getEnd() == null)
                 this.shapes.pop()
             this.isDrawing = false
             this.selectDrawingShape(this.lastShapeType)
-            this.cloneShapes()
         }
     }
-    
-    cloneShapes(){
-        let arr = []
-        if(this.selectedShapeIdx === -1){
-            console.log(this.selectedShapeIdx)
-            for(let i=0 ; i<this.shapes.length ; i++){
-                arr.push(this.shapes[i].clone())
-            }
-            this.shapesCopy.push(arr)
-            
-        }else{
-            for(let i=0 ; i < this.shapesCopy[this.shapesCopy.length-1].length ; i++){
-                arr.push(this.shapesCopy[this.shapesCopy.length-1][i].clone())
-            }
-            arr.push(this.shapes[this.selectedShapeIdx].clone())
-            this.shapesCopy.push(arr)
-            
-        }
-    }
-
 
     setSelectedColor(color){
         if (this.selectedShape != null){
+            this.addShapesToUndo()
             this.selectedShape.setColor(color)
-            this.cloneShapes()
         }
         if (!this.selectMode)
             this.drawingProperties.color = color
     }
     setSelectedBackgroundColor(color){
         if (this.selectedShape != null){
+            this.addShapesToUndo()
             this.selectedShape.setBackgroundColor(color)
-            this.cloneShapes()
         }
-            
         if (!this.selectMode)
             this.drawingProperties.BackgroundColor = color
     }
     setSelectedThickness(thickness){
         if (this.selectedShape != null){
+            this.addShapesToUndo()
             this.selectedShape.setThickness(thickness)
-            this.cloneShapes()
         }
         if (!this.selectMode)
             this.drawingProperties.thickness = thickness
@@ -190,6 +188,7 @@ class Drawing {
     deleteShape(){
         if (!this.selectMode || this.selectedShapeIdx == -1)
             return
+        this.addShapesToUndo()
         this.shapes.splice(this.selectedShapeIdx, 1)
         this.selectedShape = null
     }

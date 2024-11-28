@@ -45,6 +45,14 @@ class Line extends Shape {
     }
 
     edit(x, y){
+        if ((this.CheckInsideIndicatorCircle(this.start, [x, y]))
+        || (this.CheckInsideIndicatorCircle(this.end, [x, y]))
+        || (this.isSelected(x, y)))
+        return true
+        else return false
+    }
+
+    startEdit(x, y){
         if (this.CheckInsideIndicatorCircle(this.start, [x, y]))
             this.editMode = 1 // to edit start point
         else if (this.CheckInsideIndicatorCircle(this.end, [x, y]))

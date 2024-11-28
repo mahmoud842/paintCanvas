@@ -126,6 +126,12 @@ class HandWrite extends Shape{
     }
 
     edit(x, y){
+        if (this.CheckInsideIndicatorCircle(this.pPoint, [x, y]) || this.isPointInside([x, y]))
+            return true
+        else return false
+    }
+
+    startEdit(x, y){
         if (this.CheckInsideIndicatorCircle(this.pPoint, [x, y])){
             this.editMode = 1
             this.v1 = this.getVector(this.pPoint, this.center)

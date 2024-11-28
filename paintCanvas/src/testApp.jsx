@@ -85,11 +85,12 @@ function TestApp() {
   }
 
   const undo = () => {
-  
-    renderCanva(canvaContextRef.current, drawingRef.current.getShapesCopyUndo())
+    drawingRef.current.undo()
+    renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
   const redo = () => {
-    renderCanva(canvaContextRef.current, drawingRef.current.getShapesCopyRedo())
+    drawingRef.current.redo()
+    renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
 
 
@@ -112,7 +113,7 @@ function TestApp() {
         const mouseX = e.offsetX
         const mouseY = e.offsetY
         drawingRef.current.mouseMove(mouseX, mouseY)
-        // renderCanva(canvaContextRef.current, drawingRef.current.getShapes()) // this is a problem
+        renderCanva(canvaContextRef.current, drawingRef.current.getShapes()) // this is a problem
     };
 
     const mouseUp = (e) => {
