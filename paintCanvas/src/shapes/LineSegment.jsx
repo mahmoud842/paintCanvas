@@ -93,6 +93,7 @@ class Line extends Shape {
         copy.focused = false
         copy.editMode = -1
         copy.name = this.name
+        return copy
     }
 }
 

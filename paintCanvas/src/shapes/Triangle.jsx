@@ -161,6 +161,7 @@ class Triangle extends Shape {
         copy.v1 = [...this.v1]
         copy.v2 = [...this.v2]
         copy.v3 = [...this.v3]
+        return copy
     }
 }
 

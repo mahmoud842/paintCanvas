@@ -212,6 +212,7 @@ class HandWrite extends Shape{
         copy.border2 = [...this.border2]
         copy.pPoint = [...this.pPoint]
         copy.angle = this.angle
+        return copy
     }
 }
 

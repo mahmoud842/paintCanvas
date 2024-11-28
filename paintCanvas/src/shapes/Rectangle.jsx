@@ -203,7 +203,7 @@ class Rectangle extends Shape {
     
         // Return the projection point as an array
         return [xProj, yProj];
-    } 
+    }
     
     updateShapeEditMode(newPoint, i){
         this.borderPoint[(i+1) % 4] = this.perpendicularProjection(this.borderPoint[(i+2) % 4], this.borderPoint[(i+1) % 4], newPoint)
@@ -239,6 +239,7 @@ class Rectangle extends Shape {
         copy.height = this.height
         copy.angle = this.angle
         copy.pPoint = [...this.pPoint]
+        return copy
     }
 }
 

@@ -1,5 +1,4 @@
 import {  useRef, useEffect } from 'react'
-import ShapeFactory from './shapes/shapeFactory'
 import Drawing from './drawing'
 import './App.css'
 
@@ -10,18 +9,13 @@ function TestApp() {
   const drawingRef = useRef(null)
   const canvaContextRef = useRef(null)
   
+  
   const colorListRef = useRef(null);           //230 boolean to show colors list
   const backListRef = useRef(null);            //230 boolean to show stroke list
-  const sizeListRef = useRef(null);            //230 boolean to show size list
   const thickListRef = useRef(null);           //230 boolean to show style list
   const sidebarRef = useRef(null);             //230 Ref to the sidebar element
   const sidebarVisibleRef = useRef(false);     //230 boolean to toggle side bar visibility
-  const selectedColorRef = useRef('black')     //230 Ref to select shape color
-  const backColorRef = useRef('transparent')   //230 Ref to select shape backcolor
-  const thicknessValueRef = useRef('4')        //230 Ref to select thicknessValue
-  const deleteRef = useRef(false)              //230 boolean to delete selected element
-  const addChangeRef = useRef(false)           //230 bool user will change options
-  const a=useRef(false),b =useRef(false)       //230 bool user will change specifically
+
   
   const toggleColorList = () => {
     if (colorListRef.current.style.display === 'none' || colorListRef.current.style.display === '') {
@@ -57,14 +51,17 @@ function TestApp() {
 
   const changeColor = (color) => {
     drawingRef.current.setSelectedColor(color)
+    
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
   const changeBackColor = (color) => {
     drawingRef.current.setSelectedBackgroundColor(color)
+    
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
   const changeThickness = (value) => {
     drawingRef.current.setSelectedThickness(value)
+
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
 
@@ -82,13 +79,20 @@ function TestApp() {
 
   const renderCanva = (canva, shapes) => {
     canva.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
-    for (let i = 0; i < shapes.length; i++) {
-      shapes[i].draw(canva)
-    }
+      for (let i = 0; i < shapes.length; i++) {
+        shapes[i].draw(canva)
+      }
   }
 
-  const undo = () => {}
-  const redo = () => {}
+  const undo = () => {
+  
+    renderCanva(canvaContextRef.current, drawingRef.current.getShapesCopyUndo())
+  }
+  const redo = () => {
+    renderCanva(canvaContextRef.current, drawingRef.current.getShapesCopyRedo())
+  }
+
+
   const deleteShape = () => {
     drawingRef.current.deleteShape()
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
@@ -108,7 +112,7 @@ function TestApp() {
         const mouseX = e.offsetX
         const mouseY = e.offsetY
         drawingRef.current.mouseMove(mouseX, mouseY)
-        renderCanva(canvaContextRef.current, drawingRef.current.getShapes()) // this is a problem
+        // renderCanva(canvaContextRef.current, drawingRef.current.getShapes()) // this is a problem
     };
 
     const mouseUp = (e) => {
@@ -135,27 +139,27 @@ function TestApp() {
               <h3>Shape Options</h3>
               <button className='opButton'  onClick={toggleColorList}>Color </button>
                   <div ref={colorListRef} style={{ display: 'none' }} className="colorList">
-                      <button className="colorOption" style={{ backgroundColor: 'red'}}    onClick={() => (changeColor('red'),addChangeRef.current = true,a.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: 'blue'}}   onClick={() => (changeColor('blue'),addChangeRef.current = true,a.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: 'green'}} onClick={() => (changeColor('green'),addChangeRef.current = true,a.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: 'yellow'}} onClick={() => (changeColor('yellow'),addChangeRef.current = true,a.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#ff00ff'}} onClick={() => (changeColor('#ff00ff'),addChangeRef.current = true,a.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#ff6f91'}} onClick={() => (changeColor('#ff6f91'),addChangeRef.current = true,a.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#008080'}} onClick={() => (changeColor('#008080'),addChangeRef.current = true,a.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#ffa500'}} onClick={() => (changeColor('#ffa500'),addChangeRef.current = true,a.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#800080'}} onClick={() => (changeColor('#800080'),addChangeRef.current = true,a.current=true)}></button>
+                      <button className="colorOption" style={{ backgroundColor: 'red'}}    onClick={() => (changeColor('red'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: 'blue'}}   onClick={() => (changeColor('blue'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: 'green'}} onClick={() => (changeColor('green'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: 'yellow'}} onClick={() => (changeColor('yellow'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: '#ff00ff'}} onClick={() => (changeColor('#ff00ff'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: '#ff6f91'}} onClick={() => (changeColor('#ff6f91'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: '#008080'}} onClick={() => (changeColor('#008080'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: '#ffa500'}} onClick={() => (changeColor('#ffa500'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: '#800080'}} onClick={() => (changeColor('#800080'))}></button>
                   </div>
               <button className='opButton' onClick={toggleBackList}>Background</button>
                   <div ref={backListRef} style={{ display: 'none' }} className="colorList">
-                      <button className="colorOption" style={{ backgroundColor: 'red' }}    onClick={() => (changeBackColor('red'),addChangeRef.current = true,b.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: 'blue'}}   onClick={() => (changeBackColor('blue'),addChangeRef.current = true,b.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: 'green'}} onClick={() => (changeBackColor('green'),addChangeRef.current = true,b.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: 'yellow'}} onClick={() => (changeBackColor('yellow'),addChangeRef.current = true,b.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#ff00ff'}} onClick={() => (changeBackColor('#ff00ff'),addChangeRef.current = true,b.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#ff6f91'}} onClick={() => (changeBackColor('#ff6f91'),addChangeRef.current = true,b.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#008080'}} onClick={() => (changeBackColor('#008080'),addChangeRef.current = true,b.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#ffa500'}} onClick={() => (changeBackColor('#ffa500'),addChangeRef.current = true,b.current=true)}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#800080'}} onClick={() => (changeBackColor('#800080'),addChangeRef.current = true,b.current=true)}></button>
+                      <button className="colorOption" style={{ backgroundColor: 'red' }}    onClick={() => (changeBackColor('red'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: 'blue'}}   onClick={() => (changeBackColor('blue'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: 'green'}} onClick={() => (changeBackColor('green'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: 'yellow'}} onClick={() => (changeBackColor('yellow'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: '#ff00ff'}} onClick={() => (changeBackColor('#ff00ff'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: '#ff6f91'}} onClick={() => (changeBackColor('#ff6f91'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: '#008080'}} onClick={() => (changeBackColor('#008080'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: '#ffa500'}} onClick={() => (changeBackColor('#ffa500'))}></button>
+                      <button className="colorOption" style={{ backgroundColor: '#800080'}} onClick={() => (changeBackColor('#800080'))}></button>
                   </div>
               <button className='opButton' onClick={toggleThickList}>Thickness </button>
                   <div ref={thickListRef} style={{ display: 'none' }} className="colorList">
