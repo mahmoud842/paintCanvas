@@ -125,3 +125,71 @@ input[type="color"] {
   height: auto;
   margin-bottom: -3px;
 }
+
+/* Button styling */
+.menu-toggle-button {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background-color: #f0f0f5; /* Light gray background */
+  border: none;
+  border-radius: 8px; /* Rounded corners */
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  cursor: pointer;
+  z-index: 1;
+}
+
+/* Icon inside the button */
+.menu-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 16px;
+}
+
+.menu-icon div {
+  width: 20px;
+  height: 2px;
+  background-color: #333; /* Dark color for lines */
+  border-radius: 2px;
+}
+
+/* Menu container */
+.menu {
+  position: absolute;
+  top: 50px; /* Below the button */
+  left: 10px;
+  background-color: #ffffff; /* White background */
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  padding: 10px 5px;
+  z-index: 2; /* Ensure it appears above other elements */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Menu items */
+.menu-item {
+  display: flex;
+  gap: 5px;
+  width: 70px;
+  padding: 5px;
+  background-color: #f0f0f5; /* Light gray background */
+  border: none;
+  border-radius: 5px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.menu-item img {
+  width: 20px;
+  height: auto;
+  margin-bottom: -3px;
+}
+
+.menu-item:hover {
+  background-color: #e0e0eb; /* Slightly darker on hover */
+}

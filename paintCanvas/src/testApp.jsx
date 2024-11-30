@@ -1,4 +1,4 @@
-import {  useRef, useEffect } from 'react'
+import {  useRef, useEffect, useState } from 'react'
 import Drawing from './drawing'
 import './App.css'
 import transparent from './assets/transparent.png'
@@ -9,6 +9,9 @@ import up_arrow_wall from './assets/up_arrow_wall.png'
 import delete_img from './assets/delete.png'
 import copy_img from './assets/copy.png'
 import cut_img from './assets/scissors.png'
+import folder_img from './assets/folder.png'
+import eraser_img from './assets/eraser.png'
+import diskette_img from './assets/diskette.png'
 
 
 function TestApp() {
@@ -20,6 +23,8 @@ function TestApp() {
 
   const sidebarRef = useRef(null)              //Ref to the sidebar element
   const sidebarVisibleRef = useRef(false)      //boolean to toggle side bar visibility
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const inputColorRef = useRef("#000000")
   const inputBGColorRef = useRef('#000000')
@@ -115,6 +120,10 @@ function TestApp() {
       inputThicknessRef.current.value = properties.thickness
     }
   }
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   useEffect(() => {
     canvasRef.current.width = window.innerWidth
@@ -308,6 +317,34 @@ function TestApp() {
             <button className='button'  onClick={redo}>redo</button>
           </div>
           <canvas ref={canvasRef} id="canvas"></canvas>
+
+          <button className="menu-toggle-button" onClick={toggleMenu}>
+            {/* Menu icon */}
+            <div className="menu-icon">
+              <div />
+              <div />
+              <div />
+            </div>
+          </button>
+
+          {/* Menu */}
+          {isMenuOpen && (
+            <div className="menu">
+                
+                <button className="menu-item">
+                  <img src={diskette_img} alt="transparent" />
+                  <div>Save</div>
+                </button>
+                <button className="menu-item">
+                  <img src={folder_img} alt="transparent" />
+                  <div>Load</div>
+                </button>
+                <button className="menu-item">
+                  <img src={eraser_img} alt="transparent" />
+                  <div>Clear</div>
+                </button>
+            </div>
+          )}
       </div>
     </>
   )

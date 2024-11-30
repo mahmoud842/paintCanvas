@@ -1,5 +1,6 @@
 import Shape from './shapes/Shape'
 import ShapeFactory from './shapes/shapeFactory'
+import Message from './message.jsx'
 
 class Drawing {
 
