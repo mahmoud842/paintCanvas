@@ -14,6 +14,7 @@ import java.util.Base64;
 
 @RestController
 @RequestMapping("/drawings")
+@CrossOrigin(origins = "http://localhost:5173")  // Allow frontend URL (React app)
 public class PaintBackendController {
     // neb3at el awl el JSON w nraga3 ID , ba3d kda tb3tly sora + ID w a save
     private final Path dataDirectory = Paths.get("data");
