@@ -15,7 +15,7 @@ import java.util.Base64;
 @RestController
 @RequestMapping("/drawings")
 public class PaintBackendController {
-
+    // neb3at el awl el JSON w nraga3 ID , ba3d kda tb3tly sora + ID w a save
     private final Path dataDirectory = Paths.get("data");
     private final Path imagesDirectory = Paths.get("images");
 
@@ -28,11 +28,12 @@ public class PaintBackendController {
         }
     }
 
-    // Save a drawing and return its unique ID
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> saveDrawing(@RequestBody Drawing drawing) {
+    // Save a drawing and return its unique ID (JSON)
+    @PostMapping("/json")
+    public ResponseEntity<Map<String, Object>> saveDrawingJSON(@RequestBody Drawing drawing) {
+        System.out.println("Received drawing: " + drawing.getName());
         String uniqueId = UUID.randomUUID().toString();
-        if (saveToFile(uniqueId, drawing)) {
+        if (saveToFileJSON(uniqueId, drawing)) {
             return ResponseEntity.ok(Map.of("success", true, "id", uniqueId));
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false));
@@ -100,11 +101,23 @@ public class PaintBackendController {
     }
 
     // Helper method to save a drawing as JSON
-    private boolean saveToFile(String id, Drawing drawing) {
+    private boolean saveToFileJSON(String id, Drawing drawing) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String jsonString = objectMapper.writeValueAsString(drawing);
             Path filePath = dataDirectory.resolve(id + ".json");
+            Files.write(filePath, jsonString.getBytes());
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    private boolean saveToFileXML(String id, Drawing drawing) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String jsonString = objectMapper.writeValueAsString(drawing);
+            Path filePath = dataDirectory.resolve(id + ".xml");
             Files.write(filePath, jsonString.getBytes());
             return true;
         } catch (IOException e) {

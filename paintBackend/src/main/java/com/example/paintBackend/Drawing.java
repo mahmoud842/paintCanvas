@@ -4,8 +4,13 @@ import java.util.List;
 
 public class Drawing {
     private String name;
-    private List<Object> shapes; // A list of shapes as generic objects
+    private List<Object> shapes;
 
+    // Default constructor
+    public Drawing() {
+    }
+
+    // Getters and Setters
     public String getName() {
         return name;
     }
