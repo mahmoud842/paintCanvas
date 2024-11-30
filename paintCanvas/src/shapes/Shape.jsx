@@ -78,8 +78,9 @@ class Shape {
         this.focused = false
     }
 
-    drawIndicatorCircle(canva, center){
-        const radius = 4
+    drawIndicatorCircle(canva, center, radius){
+        if (radius == null)
+            radius = Math.max(this.thickness, 4)
         canva.beginPath()
         canva.arc(center[0], center[1], radius, 0, 2 * Math.PI)
         canva.fillStyle = 'white'
@@ -92,7 +93,7 @@ class Shape {
     CheckInsideIndicatorCircle(center, point){
         // Calculate the squared distance between the point and the circle's center
         const distanceSquared = (point[0] - center[0]) ** 2 + (point[1] - center[1]) ** 2;
-        const radiusSquared = 4 ** 2;
+        const radiusSquared = Math.max(this.thickness, 4) ** 2;
 
         // Check if the point is inside the circle
         return distanceSquared <= radiusSquared;

@@ -2,6 +2,13 @@ import {  useRef, useEffect } from 'react'
 import Drawing from './drawing'
 import './App.css'
 import transparent from './assets/transparent.png'
+import down_arrow from './assets/down_arrow.png'
+import down_arrow_wall from './assets/down_arrow_wall.png'
+import up_arrow from './assets/up_arrow.png'
+import up_arrow_wall from './assets/up_arrow_wall.png'
+import delete_img from './assets/delete.png'
+import copy_img from './assets/copy.png'
+import cut_img from './assets/scissors.png'
 
 
 function TestApp() {
@@ -230,7 +237,6 @@ function TestApp() {
                     colorChangeRef.current = false
                   }}
                 />
-                {/* <button className='transparent-button' onClick={() =>{}}><img src={transparent} alt="transparent" /></button> */}
               </div>
 
               <div className="propertie-list">
@@ -253,6 +259,7 @@ function TestApp() {
                 <div className="propertie-type">Thickness:</div>
                 <input
                     ref={inputThicknessRef}
+                    min="1" max="10"
                     type="number"
                     className="thickness-input"
                     placeholder='thickness'
@@ -260,6 +267,31 @@ function TestApp() {
                       changeThickness(e.target.value)
                     }}
                   />
+              </div>
+
+              <div className="buttons-propertie">
+                <div className="propertie-type">Layer</div>
+                <div className='action-button-list'>
+                  <button className='action-button'><img src={down_arrow_wall} alt="transparent" /></button>
+                  <button className='action-button'><img src={down_arrow} alt="transparent" /></button>
+                  <button className='action-button'><img src={up_arrow} alt="transparent" /></button>
+                  <button className='action-button'><img src={up_arrow_wall} alt="transparent" /></button>
+                </div>
+              </div>
+              
+              <div className="buttons-propertie">
+                <div className="propertie-type">Actions</div>
+                <div className='action-button-list'>
+                  <button className="action-button" onClick={deleteShape}>
+                    <img src={delete_img} alt="transparent" />
+                  </button>
+                  <button className="action-button" onClick={()=>{}}>
+                    <img src={copy_img} alt="transparent" />
+                  </button>
+                  <button className="action-button" onClick={()=>{}}>
+                    <img src={cut_img} alt="transparent" />
+                  </button>
+                </div>
               </div>
           </div>
           
@@ -274,7 +306,6 @@ function TestApp() {
             <button className='button' onClick={() => selectShape("draw")}>draw</button>
             <button className='button'  onClick={undo}>undo</button>
             <button className='button'  onClick={redo}>redo</button>
-            <button className="button" onClick={deleteShape}>delete</button>
           </div>
           <canvas ref={canvasRef} id="canvas"></canvas>
       </div>

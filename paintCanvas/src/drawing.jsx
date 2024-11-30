@@ -73,7 +73,6 @@ class Drawing {
     }
 
     undo(){
-        console.log(this.shapesUndoStack.length)
         if (this.shapesUndoStack.length > 0){
             this.pushRedo(this.cloneShapes())
             this.shapes = this.shapesUndoStack[this.shapesUndoStack.length - 1]

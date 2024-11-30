@@ -37,7 +37,7 @@ class Ellipse extends Shape{
 
     draw(canva) {
         canva.beginPath();
-        canva.ellipse(this.centerx, this.centery, this.rx, this.ry, this.rotation, this.startAngle, this.endAngle);
+        canva.ellipse(this.centerx, this.centery, this.rx, this.ry, this.rotation * Math.PI / 180, this.startAngle, this.endAngle);
         canva.lineWidth = this.thickness;
         canva.strokeStyle = this.color;
         canva.fillStyle = this.backgroundColor
@@ -47,7 +47,6 @@ class Ellipse extends Shape{
             for (let i = 0; i < 4; i++)
                 this.drawIndicatorCircle(canva, this.borderPoint[i])
             this.drawIndicatorCircle(canva, this.pPoint)
-            //console.log(this.pPoint)
             canva.beginPath()
             canva.moveTo(this.borderPoint[0][0],this.borderPoint[0][1]); // Bottom-left corner
             canva.lineTo(this.borderPoint[1][0], this.borderPoint[1][1]); // Top-right corner
@@ -60,26 +59,23 @@ class Ellipse extends Shape{
         }
     }
     isSelected(x,y) {
-            // Translate point to ellipse center
-            const dx = x - this.centerx;
-            const dy = y - this.centery;
-        
-            // Rotate the point back by the negative rotation angle
-            const cos = Math.cos(-this.rotation);
-            const sin = Math.sin(-this.rotation);
-            const rotatedX = cos * dx - sin * dy;
-            const rotatedY = sin * dx + cos * dy;
-        
-            // Calculate normalized distance
-            const value = (rotatedX ** 2) / (this.rx ** 2) + (rotatedY ** 2) / (this.ry ** 2);
-        
-            // Allow a tolerance range due to stroke thickness
-            const margin = this.thickness+3 ;
-        
-            // Check if the point lies on the boundary within the margin
-            return value >= 1 - margin / Math.max(this.rx, this.ry) && value <= 1 + margin / Math.max(this.rx, this.ry);
-        
-        
+        // Rotate the point back by the negative rotation angle
+        const [rotatedX, rotatedY] = this.rotatePoint([x,y], -this.rotation)
+
+        // Outer ellipse parameters
+        const aOuter = this.rx + this.thickness/2
+        const bOuter = this.ry + this.thickness/2
+
+        // Inner ellipse parameters
+        const aInner = this.rx - this.thickness/2
+        const bInner = this.ry - this.thickness/2
+
+        // Distance checks
+        const outerCheck = ((rotatedX - this.centerx) ** 2) / aOuter ** 2 + ((rotatedY - this.centery) ** 2) / bOuter ** 2
+        const innerCheck = ((rotatedX - this.centerx) ** 2) / aInner ** 2 + ((rotatedY - this.centery) ** 2) / bInner ** 2
+
+        // Point lies on the thick ellipse if it is between the inner and outer boundaries
+        return outerCheck <= 1 && innerCheck >= 1
     }
     edit(x, y){
         for (let i = 0; i < 4; i++){
@@ -93,7 +89,6 @@ class Ellipse extends Shape{
         if (this.isPointInside([x, y])){
             return true
         }
-        
     }
     startEdit(x, y){
         for (let i = 0; i < 4; i++){
@@ -109,7 +104,6 @@ class Ellipse extends Shape{
             return true
         }
         if (this.isPointInside([x, y])){
-           // console.log("sss")
             this.startEditPoint = [x, y]
             this.editMode = 0
             return true
@@ -178,14 +172,9 @@ class Ellipse extends Shape{
     
     setEndEditPoint(x, y){
         switch(this.editMode){
-            case 0:
-                
+            case 0:                
                 this.move((x - this.startEditPoint[0]), (y - this.startEditPoint[1]))
-                this.startEditPoint = [x, y]
-                //this.start = this.borderPoint[0]
-                //this.end = this.borderPoint[2]
-                //this.updateShapeEditMode([x,y],1)
-                
+                this.startEditPoint = [x, y]                
                 break
 
             case 1:
@@ -199,13 +188,11 @@ class Ellipse extends Shape{
                 let v2 = this.getVector([x, y], [this.centerx,this.centery])
                 let old_angle = this.newAngle
                 this.newAngle = this.angleBetweenVectors(this.v1, v2)
-                //console.log(this.newAngle)
+                
                 this.newAngle += 360
                 this.newAngle %= 360
                 
-                this.rotation=(this.newAngle * Math.PI) / 180;
-                
-                
+                this.rotation += this.newAngle-old_angle;
                 for (let i = 0; i < 4; i++){
                     this.borderPoint[i] =this.rotatePoint(this.borderPoint[i],(this.newAngle-old_angle))
                 }
@@ -217,7 +204,6 @@ class Ellipse extends Shape{
     }
     rotatePoint(point, degree) {
         let rad = degree * (Math.PI / 180)
-        //console.log(degree)
         // Step 1: Translate point to origin
         let translatedX = point[0] - this.centerx;
         let translatedY = point[1] - this.centery;
@@ -225,7 +211,6 @@ class Ellipse extends Shape{
         // Step 2: Apply rotation
         let rotatedX = translatedX * Math.cos(rad) - translatedY * Math.sin(rad);
         let rotatedY = translatedX * Math.sin(rad) + translatedY * Math.cos(rad);
-        //console.log(rotatedX+" "+rotatedY)
         // Step 3: Translate back to the original position
         let newX = rotatedX + this.centerx;
         let newY = rotatedY + this.centery;

@@ -16,14 +16,10 @@ class Rectangle extends Shape {
     }
 
     draw(canva) {
-        // console.log(this.angle)
         canva.beginPath()
         canva.moveTo(this.borderPoint[0][0], this.borderPoint[0][1])
-        // console.log("------------------")
-        // console.log(this.borderPoint[0][0], this.borderPoint[0][1])
         for (let i = 1; i < 4; i++){
             canva.lineTo(this.borderPoint[i][0], this.borderPoint[i][1])
-            // console.log(this.borderPoint[i][0], this.borderPoint[i][1])
         }        
         canva.closePath()
         canva.strokeStyle = this.color
@@ -35,7 +31,7 @@ class Rectangle extends Shape {
         if (this.focused){
             for (let i = 0; i < 4; i++)
                 this.drawIndicatorCircle(canva, this.borderPoint[i])
-            this.drawIndicatorCircle(canva, this.pPoint)
+            this.drawIndicatorCircle(canva, this.pPoint, 4)
         }
     }
 
@@ -157,10 +153,7 @@ class Rectangle extends Shape {
         for (let i = 0; i < 4; i++){
             this.borderPoint[i] = this.rotatePoint(this.borderPoint[i], degree)
         }
-        // console.log('-------------')
-        // console.log(this.pPoint, degree)
         this.pPoint = this.rotatePoint(this.pPoint, degree)
-        // console.log(this.pPoint, degree)
     }
 
     setEndEditPoint(x, y){
