@@ -331,11 +331,13 @@ function TestApp() {
           {isMenuOpen && (
             <div className="menu">
                 
-                <button className="menu-item">
+                <button className="menu-item" onClick={() => {
+                  drawingRef.current.save()
+                }}>
                   <img src={diskette_img} alt="transparent" />
                   <div>Save</div>
                 </button>
-                <button className="menu-item">
+                <button className="menu-item" >
                   <img src={folder_img} alt="transparent" />
                   <div>Load</div>
                 </button>

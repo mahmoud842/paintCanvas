@@ -1,6 +1,7 @@
 import Shape from './shapes/Shape'
 import ShapeFactory from './shapes/shapeFactory'
 import Message from './Message'
+
 class Drawing {
 
     constructor(){
@@ -233,9 +234,11 @@ class Drawing {
         this.cloneShape = this.selectedShape.clone()
         this.deleteShape()
     }
+
     async save() {
         const newMssg = new Message("tester name", this.shapes);
         const url = 'http://localhost:8080/drawings/json';
+        console.log("saving")
     
         try {
             const response = await fetch(url, {
