@@ -1,6 +1,7 @@
 import {  useRef, useEffect } from 'react'
 import Drawing from './drawing'
 import './App.css'
+import transparent from './assets/transparent.png'
 
 
 function TestApp() {
@@ -8,36 +9,23 @@ function TestApp() {
   const canvasRef = useRef(null)
   const drawingRef = useRef(null)
   const canvaContextRef = useRef(null)
-  
-  
-  const colorListRef = useRef(null);           //230 boolean to show colors list
-  const backListRef = useRef(null);            //230 boolean to show stroke list
-  const thickListRef = useRef(null);           //230 boolean to show style list
-  const sidebarRef = useRef(null);             //230 Ref to the sidebar element
-  const sidebarVisibleRef = useRef(false);     //230 boolean to toggle side bar visibility
+  const ClintPostionRef = useRef(null)
 
-  
-  const toggleColorList = () => {
-    if (colorListRef.current.style.display === 'none' || colorListRef.current.style.display === '') {
-      colorListRef.current.style.display = 'block';
-    } else {
-      colorListRef.current.style.display = 'none';
-    }
-  };
-  const toggleBackList = () => {
-    if (backListRef.current.style.display === 'none' || backListRef.current.style.display === '') {
-      backListRef.current.style.display = 'block';
-    } else {
-      backListRef.current.style.display = 'none';
-    }
-  };
-  const toggleThickList = () => {
-    if (thickListRef.current.style.display === 'none' || thickListRef.current.style.display === '') {
-      thickListRef.current.style.display = 'block';
-    } else {
-      thickListRef.current.style.display = 'none';
-    }
-  };
+  const sidebarRef = useRef(null)              //Ref to the sidebar element
+  const sidebarVisibleRef = useRef(false)      //boolean to toggle side bar visibility
+
+  const inputColorRef = useRef("#000000")
+  const inputBGColorRef = useRef('#000000')
+  const inputThicknessRef = useRef(4)
+
+  const colorChangeRef = useRef(false)
+  const backgroundColorChangeRef = useRef(false)
+
+  const zoomLevelRef = useRef(1)
+  const offSetRef = useRef([0,0])
+  const altKeyRef = useRef(false)
+  const isDragRef = useRef(false)
+  const startDragRef = useRef([0,0])
   
   const showSideBar = () => {
     sidebarVisibleRef.current = true;
@@ -50,18 +38,23 @@ function TestApp() {
   }
 
   const changeColor = (color) => {
+    if (!colorChangeRef.current){
+      drawingRef.current.addShapesToUndo()
+      colorChangeRef.current = true
+    }
     drawingRef.current.setSelectedColor(color)
-    
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
   const changeBackColor = (color) => {
+    if (!backgroundColorChangeRef.current){
+      drawingRef.current.addShapesToUndo()
+      backgroundColorChangeRef.current = true
+    }
     drawingRef.current.setSelectedBackgroundColor(color)
-    
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
   const changeThickness = (value) => {
     drawingRef.current.setSelectedThickness(value)
-
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
 
@@ -69,16 +62,18 @@ function TestApp() {
     drawingRef.current.setDrawingMode()
     drawingRef.current.selectDrawingShape(shapeType)
     showSideBar()
+    updateInputProperties()
   }
 
   const selectMode = () => {
     drawingRef.current.setSelectMode()
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
-    //hideSideBar()
+    hideSideBar()
   }
 
   const renderCanva = (canva, shapes) => {
-    canva.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+    canva.setTransform(zoomLevelRef.current, 0, 0, zoomLevelRef.current, offSetRef.current[0], offSetRef.current[1])
+    canva.clearRect(-offSetRef.current[0] / zoomLevelRef.current, -offSetRef.current[1] / zoomLevelRef.current, canvas.width / zoomLevelRef.current, canvas.height / zoomLevelRef.current)
       for (let i = 0; i < shapes.length; i++) {
         shapes[i].draw(canva)
       }
@@ -93,42 +88,128 @@ function TestApp() {
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
 
-
   const deleteShape = () => {
     drawingRef.current.deleteShape()
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
 
+  const realMouse = (x, y) => {
+    return [(x- offSetRef.current[0]) / zoomLevelRef.current, (y - offSetRef.current[1]) / zoomLevelRef.current]
+  }
+
+  const updateInputProperties = () => {
+    let properties = drawingRef.current.getSelectedShapeProperties()
+    if (properties != null){
+      inputColorRef.current.value = properties.color
+      if (properties.backgroundColor !== 'transparent')
+        inputBGColorRef.current.value = properties.backgroundColor
+      inputThicknessRef.current.value = properties.thickness
+    }
+  }
+
   useEffect(() => {
+    canvasRef.current.width = window.innerWidth
+    canvasRef.current.height = window.innerHeight
     canvaContextRef.current = canvasRef.current.getContext('2d')
     drawingRef.current = new Drawing()
 
     const mouseDown = (e) => {
-      const mouseX = e.offsetX
-      const mouseY = e.offsetY
-      drawingRef.current.mouseDown(mouseX, mouseY)
+      let [mouseX, mouseY] = [e.offsetX, e.offsetY]
+      if (altKeyRef.current){
+        isDragRef.current = true
+        startDragRef.current[0] = mouseX - offSetRef.current[0]
+        startDragRef.current[1] = mouseY - offSetRef.current[1]
+      }
+      else {
+        [mouseX, mouseY] = realMouse(e.offsetX, e.offsetY)
+        drawingRef.current.mouseDown(mouseX, mouseY)
+      }
+      if (!drawingRef.current.isSelected())
+        hideSideBar()
+      else {
+        updateInputProperties()
+        showSideBar()
+      }
     };
 
     const mouseMove = (e) => {
-        const mouseX = e.offsetX
-        const mouseY = e.offsetY
-        drawingRef.current.mouseMove(mouseX, mouseY)
+        let [mouseX, mouseY] = [e.offsetX, e.offsetY]
+        ClintPostionRef.current = realMouse(e.offsetX, e.offsetY)
+        if (isDragRef.current){
+          offSetRef.current[0] = mouseX - startDragRef.current[0]
+          offSetRef.current[1] = mouseY - startDragRef.current[1]
+        }
+        else {
+          [mouseX, mouseY] = realMouse(e.offsetX, e.offsetY)
+          drawingRef.current.mouseMove(mouseX, mouseY)
+        }
         renderCanva(canvaContextRef.current, drawingRef.current.getShapes()) // this is a problem
     };
 
     const mouseUp = (e) => {
+      if (isDragRef.current)
+        isDragRef.current = false
+      else 
         drawingRef.current.mouseUp()
-        renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+      renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
     };
 
+    const handleButtonPress = (e) => {
+      if (e.key === 'Alt') 
+        altKeyRef.current = true
+      else if (e.ctrlKey && (e.key === 'c' || e.key === 'C'))
+        drawingRef.current.copyCommand()
+      else if (e.ctrlKey && (e.key === 'v' || e.key === 'V')){
+        drawingRef.current.pastCommand(ClintPostionRef.current)
+        renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+      }
+      else if (e.ctrlKey && (e.key === 'x' || e.key === 'X')){
+        drawingRef.current.cutCommand()
+        renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+      }
+    }
+
+    const handleAltRelease = (e) => {
+      if (e.key === 'Alt') {
+        altKeyRef.current = false
+      }
+    }
+
+    const wheelAction = (e) => {
+      e.preventDefault()
+      const scaleFactor = 1.1; // Zoom speed
+      const mouseX = (e.clientX - offSetRef.current[0]) / zoomLevelRef.current
+      const mouseY = (e.clientY - offSetRef.current[1]) / zoomLevelRef.current
+  
+      if (e.deltaY < 0) {
+          // Zoom in
+          zoomLevelRef.current *= scaleFactor
+      } else {
+          // Zoom out
+          zoomLevelRef.current /= scaleFactor
+      }
+  
+      // Adjust pan to keep zoom centered on mouse position
+      offSetRef.current[0] = e.clientX - mouseX * zoomLevelRef.current
+      offSetRef.current[1] = e.clientY - mouseY * zoomLevelRef.current
+  
+      renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+    }
+
+    canvasRef.current.addEventListener('wheel', wheelAction)
     canvasRef.current.addEventListener('mousedown', mouseDown)
     canvasRef.current.addEventListener('mousemove', mouseMove)
     canvasRef.current.addEventListener('mouseup', mouseUp)
+    document.addEventListener('keydown', handleButtonPress)
+    document.addEventListener('keyup', handleAltRelease)
     
     return () => {
+      canvasRef.current.removeEventListener('wheel', wheelAction)
       canvasRef.current.removeEventListener('mousedown', mouseDown)
       canvasRef.current.removeEventListener('mousemove', mouseMove)
       canvasRef.current.removeEventListener('mouseup', mouseUp)
+      document.removeEventListener('keydown', handleButtonPress)
+      document.removeEventListener('keyup', handleAltRelease)
     };
   }, [])
 
@@ -136,65 +217,61 @@ function TestApp() {
   return (
     <>
       <div className='page'>
-          <div ref={sidebarRef} className='sidebar' style={{ display: 'none' }}>
-              <h3>Shape Options</h3>
-              <button className='opButton'  onClick={toggleColorList}>Color </button>
-                  <div ref={colorListRef} style={{ display: 'none' }} className="colorList">
-                      <button className="colorOption" style={{ backgroundColor: 'red'}}    onClick={() => (changeColor('red'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: 'blue'}}   onClick={() => (changeColor('blue'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: 'green'}} onClick={() => (changeColor('green'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: 'yellow'}} onClick={() => (changeColor('yellow'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#ff00ff'}} onClick={() => (changeColor('#ff00ff'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#ff6f91'}} onClick={() => (changeColor('#ff6f91'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#008080'}} onClick={() => (changeColor('#008080'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#ffa500'}} onClick={() => (changeColor('#ffa500'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#800080'}} onClick={() => (changeColor('#800080'))}></button>
-                  </div>
-              <button className='opButton' onClick={toggleBackList}>Background</button>
-                  <div ref={backListRef} style={{ display: 'none' }} className="colorList">
-                      <button className="colorOption" style={{ backgroundColor: 'red' }}    onClick={() => (changeBackColor('red'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: 'blue'}}   onClick={() => (changeBackColor('blue'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: 'green'}} onClick={() => (changeBackColor('green'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: 'yellow'}} onClick={() => (changeBackColor('yellow'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#ff00ff'}} onClick={() => (changeBackColor('#ff00ff'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#ff6f91'}} onClick={() => (changeBackColor('#ff6f91'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#008080'}} onClick={() => (changeBackColor('#008080'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#ffa500'}} onClick={() => (changeBackColor('#ffa500'))}></button>
-                      <button className="colorOption" style={{ backgroundColor: '#800080'}} onClick={() => (changeBackColor('#800080'))}></button>
-                  </div>
-              <button className='opButton' onClick={toggleThickList}>Thickness </button>
-                  <div ref={thickListRef} style={{ display: 'none' }} className="colorList">
-                  <input
-                      type="number"
-                      className="thicknessInput"
-                      placeholder='thickness'
-                      onChange={(e) => {
-                        changeThickness(e.target.value)
-                      }}
-                    />
-                  </div>
-          </div>
+          <div ref={sidebarRef} className='side-bar'>
+              <div className="propertie-list">
+                <div className="propertie-type">Color:</div>
+                <input ref={inputColorRef} type="color" className="color-input" 
+                  onChange={(e) => {
+                    changeColor(e.target.value)
+                  }}
+                  onBlur={(e) => {
+                    colorChangeRef.current = false
+                  }}
+                />
+                {/* <button className='transparent-button' onClick={() =>{}}><img src={transparent} alt="transparent" /></button> */}
+              </div>
 
-          <div className='appContainer'>
-              <div className='shapesContainer' >
-                <button className='button' onClick={() => selectMode()}>select</button>
-                <button className='button' onClick={() => selectShape("line")}>line</button>
-                <button className='button' onClick={() => selectShape("square")}>square</button>
-                <button className='button' onClick={() => selectShape("rectangle")}>rectangle</button>
-                <button className='button' onClick={() => selectShape("circle")}>circle</button>
-                <button className='button' onClick={() => selectShape("ellipse")}>ellipse</button>
-                <button className='button' onClick={() => selectShape("triangle")}>triangle</button>
-                <button className='button' onClick={() => selectShape("draw")}>draw</button>
-              </div >
+              <div className="propertie-list">
+                <div className="propertie-type">Background:</div>
+                <input ref={inputBGColorRef} type="color" className="color-input" 
+                  onChange={(e) => {
+                    changeBackColor(e.target.value)
+                  }}
+                  onBlur={(e) => {
+                    backgroundColorChangeRef.current = false
+                  }}
+                />
+                <button className='transparent-button' onClick={() =>{}}><img src={transparent} alt="transparent" /></button>
+              </div>
 
-              <canvas ref={canvasRef} id="canvas" width="600" height="400" style={{ border: '1px solid black' }}></canvas>
-              
-              <div>
-                <button className='button'  onClick={undo}>undo</button>
-                <button className='button'  onClick={redo}>redo</button>
-                <button className="button" onClick={deleteShape}>delete</button>
+              <div className='propertie-list'>
+                <div className="propertie-type">Thickness:</div>
+                <input
+                    ref={inputThicknessRef}
+                    type="number"
+                    className="thickness-input"
+                    placeholder='thickness'
+                    onChange={(e) => {
+                      changeThickness(e.target.value)
+                    }}
+                  />
               </div>
           </div>
+          
+          <div className='shapes-container'>
+            <button className='button' onClick={() => selectMode()}>select</button>
+            <button className='button' onClick={() => selectShape("line")}>line</button>
+            <button className='button' onClick={() => selectShape("square")}>square</button>
+            <button className='button' onClick={() => selectShape("rectangle")}>rectangle</button>
+            <button className='button' onClick={() => selectShape("circle")}>circle</button>
+            <button className='button' onClick={() => selectShape("ellipse")}>ellipse</button>
+            <button className='button' onClick={() => selectShape("triangle")}>triangle</button>
+            <button className='button' onClick={() => selectShape("draw")}>draw</button>
+            <button className='button'  onClick={undo}>undo</button>
+            <button className='button'  onClick={redo}>redo</button>
+            <button className="button" onClick={deleteShape}>delete</button>
+          </div>
+          <canvas ref={canvasRef} id="canvas"></canvas>
       </div>
     </>
   )

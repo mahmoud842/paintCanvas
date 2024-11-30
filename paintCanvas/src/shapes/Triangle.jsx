@@ -139,6 +139,7 @@ class Triangle extends Shape {
                 this.setCenter()
                 break
         }
+        this.setCenter()
     }
 
     move(dx, dy){
@@ -148,6 +149,7 @@ class Triangle extends Shape {
         this.v2[1] += dy
         this.v3[0] += dx
         this.v3[1] += dy
+        this.setCenter()
     }
 
     endEditing(){

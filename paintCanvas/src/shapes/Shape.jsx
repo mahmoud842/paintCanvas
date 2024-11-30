@@ -4,7 +4,7 @@ class Shape {
         this.start = null
         this.end = null
         this.center = [0, 0]
-        this.color = 'black'
+        this.color = '#000000'
         this.backgroundColor = 'transparent'
         this.thickness = 4
         this.focused = false
@@ -29,6 +29,22 @@ class Shape {
         this.backgroundColor = color;
     }
 
+    getColor() {
+        return this.color
+    }
+
+    getThickness() {
+        return this.thickness
+    }
+
+    getBackgroundColor(){       
+        return this.backgroundColor
+    }
+
+    getCenter(){
+        return this.center
+    }
+    
     draw(canva) {
         throw new Error("The draw method must be implemented in a subclass");
     }
@@ -53,10 +69,6 @@ class Shape {
     isSelected(x,y){
         throw new Error("The isSelected method must be implemented")
     }
-
-    // selectionMode(){
-    //     throw new Error("The selectionMode method must be implemented")
-    // }
 
     focus(){
         this.focused = true

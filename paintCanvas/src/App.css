@@ -1,149 +1,100 @@
-/* App.css */
 .page {
-  display: flex;
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  user-select: none;
+  width: 100vw;
   height: 100vh;
-}
-
-.sidebar {
-  position: fixed;
-  left: 0;
+  position: absolute;
   top: 0;
-  width: 150px;
-  height: 90vh;
-  border-radius: 30px;
-  background-color:  #93c5724d;
-  padding: 20px;
-  transition: transform 0.3s ease;
+  left: 0;
 }
 
-.sidebar.show {
-  display: block;
+.page * {
+  margin: 0px;
+  padding: 0px;
+  border: none;
 }
 
-.appContainer {
+button {
+  all: unset;
+  /* Optional: You can add your own styles below */
+  cursor: pointer; /* Make sure the button still behaves like a button */
+}
+
+.side-bar {
+  display: none;
+  position: absolute;
+  top: 20%;
+  left: 10px;
+  z-index: 1;
+  border-radius: 8px;
+  font-size: 16px;
+  box-shadow: 0 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+.color-list {
+  display: none;
+}
+
+.shapes-container {
+  position: absolute;
+  top: 0;
+  left: 32.5%;
+  z-index: 1;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100%;
-  margin-left: 0;
-  transition: margin-left 0.3s ease;
+  gap: 5px;
 }
 
-.appContainer.sidebarVisible {
-  margin-left: 200px;
-}
-
-.shapesContainer {
-  display: flex;
-  gap: 1px;
-  margin-bottom: 1px;
+.shapes-container button {
+  padding: 5px;
 }
 
 #canvas {
-  border: 1px solid rgb(34, 96, 56);
-  border-radius: 10px;
-  background-color: #f9f9f9;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 }
 
-/* The Shapes Buttons */
-.button {
-    padding: 8px 11px;
-    margin: 3px 2px;
-    background-color: #93c572;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    text-transform: uppercase;
-    box-shadow:
-      0 4px 8px rgba(0, 0, 0, 0.2),
-      0 0 12px rgba(147, 197, 114, 0.5),
-      inset 0 0 8px rgba(255, 255, 255, 0.3),
-      0 0 6px rgba(255, 255, 255, 0.2);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
-}
-.button:hover {
-    transform: translateY(-3px);
-    background-color: #81b05a;
-    box-shadow:
-      0 6px 12px rgba(0, 0, 0, 0.3),
-      0 0 18px rgba(147, 197, 114, 0.7),
-      inset 0 0 10px rgba(255, 255, 255, 0.4),
-      0 0 8px rgba(255, 255, 255, 0.3);
-}
-.button:active {
-    transform: translateY(2px);
-    box-shadow:
-      0 4px 8px rgba(0, 0, 0, 0.2),
-      0 0 12px rgba(147, 197, 114, 0.5),
-      inset 0 0 6px rgba(255, 255, 255, 0.3),
-      0 0 5px rgba(255, 255, 255, 0.2);
-}
-
-.opButton {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #93c572;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  text-align: center;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-}
-
-.opButton:hover {
-  background-color: #b0cf82;
-}
-
-.colorList {
+.propertie-list {
+  /* margin-top: 5px; */
+  margin: 5px;
+  padding: 10px 5px 0px 5px;
   display: flex;
-  flex-wrap: wrap;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  margin-bottom : 10px;
+  gap: 5px;
+  align-items: center;
 }
 
-.colorOption {
-  padding: 10px;
-  margin: 2px;
-  cursor: pointer;
-  border-radius: 5px;
+.transparent-button {
+  padding: 0px;
+  margin: 0px;
+  background-color: none;
+}
+
+.transparent-button img {
+  width: 25px;
+  height: auto;
+  margin-bottom: -3px;
+}
+
+.propertie-type {
+  font-size: 20px;
+}
+
+input[type="color"] {
+  all: unset;
+  width: 30px;
+  height: 32px;
   border: none;
-  transition: background-color 0.3s;
-  font-weight: bold;
-  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 0;
 }
 
-.colorOption:hover {
-  background-color: #f0f0f0;
-  transform: scale(1.05);
+.thickness-input {
+  background-color: rgb(245, 245, 245);
+  padding: 5px;
+  width: 100px;
 }
-
-.thicknessInput {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.thicknessInput:focus {
-  border-color: #4CAF50;
-}
-
-.thicknessInput::placeholder {
-  color: #888;
-  font-style: italic;
-}
-
-

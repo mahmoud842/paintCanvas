@@ -21,7 +21,9 @@ class Line extends Shape {
         }
     }
 
-    updateShape(){}
+    updateShape(){
+        this.center = [this.start[0]+this.end[0]/2, this.start[1]+this.end[1]/2]
+    }
 
     isSelected(px, py){
         let x1 = this.start[0]
@@ -69,6 +71,8 @@ class Line extends Shape {
         this.start[1] += dy
         this.end[0] += dx
         this.end[1] += dy
+        this.center[0] += dx
+        this.center[1] += dy
     }
 
     setEndEditPoint(x, y){

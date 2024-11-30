@@ -15,12 +15,21 @@ class Drawing {
         this.selectedShape = null
         this.selectedShapeIdx = -1
 
+        // variables for copy & paste
+        this.shapeClone = null
+
         // default values
         this.drawingProperties = {
-            color : 'black',
+            color : '#000000',
             BackgroundColor : 'transparent',
             thickness : 4
         }
+    }
+
+    isSelected(){
+        if (this.selectedShape == null)
+            return false
+        return true
     }
 
     updateShapeProperties(properties){
@@ -64,6 +73,7 @@ class Drawing {
     }
 
     undo(){
+        console.log(this.shapesUndoStack.length)
         if (this.shapesUndoStack.length > 0){
             this.pushRedo(this.cloneShapes())
             this.shapes = this.shapesUndoStack[this.shapesUndoStack.length - 1]
@@ -162,7 +172,6 @@ class Drawing {
 
     setSelectedColor(color){
         if (this.selectedShape != null){
-            this.addShapesToUndo()
             this.selectedShape.setColor(color)
         }
         if (!this.selectMode)
@@ -170,12 +179,12 @@ class Drawing {
     }
     setSelectedBackgroundColor(color){
         if (this.selectedShape != null){
-            this.addShapesToUndo()
             this.selectedShape.setBackgroundColor(color)
         }
         if (!this.selectMode)
             this.drawingProperties.BackgroundColor = color
     }
+
     setSelectedThickness(thickness){
         if (this.selectedShape != null){
             this.addShapesToUndo()
@@ -193,6 +202,37 @@ class Drawing {
         this.selectedShape = null
     }
 
+    getSelectedShapeProperties(){
+        if (this.selectedShape == null)
+            return null
+        return {
+            color: this.selectedShape.getColor(),
+            backgroundColor: this.selectedShape.getBackgroundColor(),
+            thickness: this.selectedShape.getThickness()
+        }
+    }
+
+    copyCommand(position){
+        if (this.selectedShape == null || this.selectedShapeIdx == -1)
+            return
+        this.cloneShape = this.selectedShape.clone()
+    }
+
+    pastCommand([x,y]){
+        if (this.cloneShape == null || this.selectedShapeIdx == -1)
+            return
+        this.addShapesToUndo()
+        let newShape = this.cloneShape.clone()
+        newShape.move(x-this.cloneShape.getCenter()[0], y-this.cloneShape.getCenter()[1])
+        this.shapes.push(newShape)
+    }
+
+    cutCommand(){
+        if (this.selectedShape == null || this.selectedShapeIdx == -1)
+            return
+        this.cloneShape = this.selectedShape.clone()
+        this.deleteShape()
+    }
 }
 
 export default Drawing;

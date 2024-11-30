@@ -18,6 +18,10 @@ class Ellipse extends Shape{
         return point
     }
 
+    getCenter() {
+        return [this.centerx, this.centery]
+    }
+
     updateShape() {
         this.borderPoint = []
         this.borderPoint.push([Math.min(this.start[0], this.end[0]), Math.min(this.start[1], this.end[1])])
