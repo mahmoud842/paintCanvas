@@ -41,6 +41,17 @@ public class PaintBackendController {
         }
     }
 
+    @PutMapping("/{id}/json")
+    public ResponseEntity<Map<String, Boolean>> updateDrawing(
+            @PathVariable String id,
+            @RequestBody Drawing drawing) {
+        if (saveToFileJSON(id, drawing)) {
+            return ResponseEntity.ok(Map.of("success", true));
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false));
+        }
+    }
+
     // Save an image associated with a specific ID
     @PostMapping("/{id}/image")
     public ResponseEntity<Map<String, Boolean>> saveImage(
