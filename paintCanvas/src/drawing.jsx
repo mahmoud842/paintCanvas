@@ -1,3 +1,4 @@
+import Shape from './shapes/Shape'
 import ShapeFactory from './shapes/shapeFactory'
 
 class Drawing {
@@ -232,6 +233,7 @@ class Drawing {
         this.cloneShape = this.selectedShape.clone()
         this.deleteShape()
     }
+    
 }
 
 export default Drawing;
