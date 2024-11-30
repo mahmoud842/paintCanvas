@@ -5,8 +5,9 @@ class SaveAndLoad {
         this.id = null
     }
 
-    async saveJsonWithoutID(){
-        const newMssg = new Message("tester name", this.shapes)
+    async saveJsonWithoutID(name, shapes){
+        const newMssg = new Message("tester name", shapes)
+        console.log(newMssg)
         const url = 'http://localhost:8080/drawings/json'
         console.log("saving to: " + url)
         try {
@@ -33,8 +34,8 @@ class SaveAndLoad {
         }
     }
 
-    async saveJsonWithID(){
-        const newMssg = new Message("tester name", this.shapes)
+    async saveJsonWithID(name, shapes){
+        const newMssg = new Message("tester name", shapes)
         const url = 'http://localhost:8080/drawings/' + this.id + '/json'
         console.log("saving to: " + url)
         try {
@@ -62,10 +63,9 @@ class SaveAndLoad {
     async save(shapes, image, name){
         console.log(shapes)
         if (this.id == null)
-            this.saveJsonWithoutID()
+            this.saveJsonWithoutID(name, shapes)
         else
-            this.saveJsonWithID()
-
+            this.saveJsonWithID(name, shapes)
     }
 
     load(){
