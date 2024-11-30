@@ -81,6 +81,7 @@ function TestApp() {
 
   const undo = () => {
     drawingRef.current.undo()
+    hideSideBar()
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
   const redo = () => {
@@ -90,6 +91,7 @@ function TestApp() {
 
   const deleteShape = () => {
     drawingRef.current.deleteShape()
+    hideSideBar()
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
 
@@ -241,7 +243,10 @@ function TestApp() {
                     backgroundColorChangeRef.current = false
                   }}
                 />
-                <button className='transparent-button' onClick={() =>{}}><img src={transparent} alt="transparent" /></button>
+                <button className='transparent-button' onClick={() =>{
+                  changeBackColor('transparent')
+                  backgroundColorChangeRef.current = false
+                }}><img src={transparent} alt="transparent" /></button>
               </div>
 
               <div className='propertie-list'>
