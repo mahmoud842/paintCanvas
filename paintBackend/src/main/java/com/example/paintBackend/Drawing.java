@@ -1,9 +1,15 @@
 package com.example.paintBackend;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
 import java.util.List;
 
 public class Drawing {
     private String name;
+
+    @JacksonXmlElementWrapper(localName = "shapes")
+    @JacksonXmlProperty(localName = "shape")
     private List<Object> shapes;
 
     // Default constructor
