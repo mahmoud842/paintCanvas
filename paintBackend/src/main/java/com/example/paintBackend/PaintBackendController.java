@@ -93,7 +93,6 @@ public class PaintBackendController {
     public ResponseEntity<Map<String, Object>> getDrawingById(@PathVariable String id) {
         try {
             Path filePath = dataDirectory.resolve(id + ".json");
-
             if (!Files.exists(filePath)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Drawing not found"));
             }
