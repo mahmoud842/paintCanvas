@@ -8,8 +8,8 @@ import java.util.List;
 public class Drawing {
     private String name;
 
-    @JacksonXmlElementWrapper(localName = "shapes")
-    @JacksonXmlProperty(localName = "shape")
+    @JacksonXmlProperty(localName = "shapes")
+    @JacksonXmlElementWrapper(useWrapping = false)
     private List<Object> shapes;
 
     // Default constructor
