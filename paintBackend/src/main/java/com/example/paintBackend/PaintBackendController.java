@@ -92,13 +92,19 @@ public class PaintBackendController {
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getDrawingById(@PathVariable String id) {
         try {
-            Path filePath = dataDirectory.resolve(id + ".json");
-            if (!Files.exists(filePath)) {
+            Path jsonFilePath = dataDirectory.resolve(id + ".json");
+            Path xmlFilePath = dataDirectory.resolve(id + ".xml");
+            Map<String, Object> drawing;
+
+            if (Files.exists(jsonFilePath)) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                drawing = objectMapper.readValue(Files.newBufferedReader(jsonFilePath), Map.class);
+            }else if(Files.exists(xmlFilePath)){
+                XmlMapper xmlMapper = new XmlMapper();
+                drawing = xmlMapper.readValue(Files.newBufferedReader(xmlFilePath), Map.class);
+            }else{
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Drawing not found"));
             }
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, Object> drawing = objectMapper.readValue(Files.newBufferedReader(filePath), Map.class);
             return ResponseEntity.ok(drawing);
         } catch (IOException e) {
             e.printStackTrace();
