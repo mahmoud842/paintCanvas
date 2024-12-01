@@ -107,6 +107,18 @@ class Line extends Shape {
         copy.name = this.name
         return copy
     }
+
+    giveData(data){
+        this.start = data.start
+        this.end = data.end
+        this.center = data.center
+        this.color = data.color
+        this.backgroundColor = data.backgroundColor
+        this.thickness = data.thickness
+        this.focused = false
+        this.editMode = -1
+        this.name = data.name
+    }
 }
 
 export default Line;

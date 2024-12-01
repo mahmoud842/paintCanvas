@@ -3,6 +3,7 @@ import Shape from './Shape'
 class Ellipse extends Shape{
     constructor() {
         super();
+        this.name = "Ellipse"
         this.borderPoint = []
         this.rx = 0;
         this.ry = 0;
@@ -258,6 +259,26 @@ class Ellipse extends Shape{
         copy.rotation = this.rotation
         copy.pPoint = [...this.pPoint]
         return copy
+    }
+
+    giveData(data){
+        this.start = data.start
+        this.end = data.end
+        this.color = data.color
+        this.backgroundColor = data.backgroundColor
+        this.thickness = data.thickness
+        this.focused = false
+        this.editMode = -1
+        this.name = data.name
+
+        this.borderPoint = data.borderPoint
+        this.centerx = data.centerx
+        this.centery = data.centery
+        this.rx = data.rx
+        this.ry = data.ry
+        this.startaAngle = data.startaAngle
+        this.rotation = data.rotation
+        this.pPoint = data.pPoint
     }
 }
 

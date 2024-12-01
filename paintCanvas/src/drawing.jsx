@@ -2,6 +2,7 @@ import Shape from './shapes/Shape'
 import ShapeFactory from './shapes/shapeFactory'
 import Message from './Message'
 import SaveAndLoad from './saveAndLoad'
+import ShapeBuilder from './shapes/shapeBuilder'
 
 class Drawing {
 
@@ -12,6 +13,7 @@ class Drawing {
         this.isDrawing = false
         
         this.shapeFactory = new ShapeFactory()
+        this.shapeBuilder = new ShapeBuilder()
         this.shapesUndoStack = []
         this.shapesRedoStack = []
         this.shapes = []
@@ -239,7 +241,40 @@ class Drawing {
     }
 
     async save(canvas) {
-        this.serverModule.save(this.shapes, canvas)
+        this.serverModule.save(this.shapes, canvas, true)
+    }
+
+    async load(canvas) {
+
+    }
+
+    async loadDrawing(id) {
+        const jsonObject = await this.serverModule.loadDrawing(id)
+        this.selectMode = false
+        this.isEditing = false
+        this.drawingMode = false
+        this.isDrawing = false
+        
+        this.shapesUndoStack = []
+        this.shapesRedoStack = []
+        this.shapes = this.shapeBuilder.createShapes(jsonObject.shapes)
+        console.log(this.shapes)
+        this.selectedShape = null
+        this.selectedShapeIdx = -1
+
+        // variables for copy & paste
+        this.shapeClone = null
+
+        // default values
+        this.drawingProperties = {
+            color : '#000000',
+            BackgroundColor : 'transparent',
+            thickness : 4
+        }
+    }
+
+    async loadImages() {
+        return await this.serverModule.loadImages()
     }
     
     

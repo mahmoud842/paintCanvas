@@ -248,6 +248,25 @@ class Rectangle extends Shape {
         copy.pPoint = [...this.pPoint]
         return copy
     }
+
+    giveData(data){
+        this.start = data.start
+        this.end = data.end
+        this.center = data.center
+        this.color = data.color
+        this.backgroundColor = data.backgroundColor
+        this.thickness = data.thickness
+        this.focused = false
+        this.editMode = -1
+        this.name = data.name
+
+        this.borderPoint = data.borderPoint
+        this.center = data.center
+        this.width = data.width
+        this.height = data.height
+        this.angle = data.angle
+        this.pPoint = data.pPoint
+    }
 }
 
 export default Rectangle;

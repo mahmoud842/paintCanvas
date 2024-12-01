@@ -174,6 +174,23 @@ class Triangle extends Shape {
         copy.v3 = [...this.v3]
         return copy
     }
+
+    giveData(data){
+        this.start = data.start
+        this.end = data.end
+        this.center = data.center
+        this.color = data.color
+        this.backgroundColor = data.backgroundColor
+        this.thickness = data.thickness
+        this.focused = false
+        this.editMode = -1
+        this.name = data.name
+    
+        this.name = data.name
+        this.v1 = data.v1
+        this.v2 = data.v2
+        this.v3 = data.v3
+    }
 }
 
 export default Triangle;

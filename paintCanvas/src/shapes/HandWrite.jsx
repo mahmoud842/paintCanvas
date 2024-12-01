@@ -220,6 +220,27 @@ class HandWrite extends Shape{
         copy.angle = this.angle
         return copy
     }
+
+    giveData(data){
+        this.start = data.start
+        this.end = data.end
+        this.center = data.center
+        this.color = data.color
+        this.backgroundColor = data.backgroundColor
+        this.thickness = data.thickness
+        this.focused = false
+        this.editMode = -1
+        this.name = data.name
+
+        this.name = data.name
+        this.points = data.points
+        this.maxima = data.maxima
+        this.minima = data.minima
+        this.border1 = data.border1
+        this.border2 = data.border2
+        this.pPoint = data.pPoint
+        this.angle = data.angle
+    }
 }
 
 export default HandWrite;
