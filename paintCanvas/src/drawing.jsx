@@ -238,8 +238,8 @@ class Drawing {
         this.deleteShape()
     }
 
-    async save() {
-        this.serverModule.save(this.shapes)
+    async save(canvas) {
+        this.serverModule.save(this.shapes, canvas)
     }
     
     

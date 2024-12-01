@@ -33,11 +33,21 @@ function TestApp() {
   const colorChangeRef = useRef(false)
   const backgroundColorChangeRef = useRef(false)
 
+  const loadScreenRef = useRef(null)
+
   const zoomLevelRef = useRef(1)
   const offSetRef = useRef([0,0])
   const altKeyRef = useRef(false)
   const isDragRef = useRef(false)
   const startDragRef = useRef([0,0])
+
+  const displayLoadScreen = () => {
+    loadScreenRef.current.style.display = 'flex';
+  }
+
+  const closeLoadScreen = () => {
+    loadScreenRef.current.style.display = 'none';
+  }
   
   const showSideBar = () => {
     sidebarVisibleRef.current = true;
@@ -332,12 +342,12 @@ function TestApp() {
             <div className="menu">
                 
                 <button className="menu-item" onClick={() => {
-                  drawingRef.current.save()
+                  drawingRef.current.save(canvasRef.current)
                 }}>
                   <img src={diskette_img} alt="transparent" />
                   <div>Save</div>
                 </button>
-                <button className="menu-item" >
+                <button className="menu-item" onClick={displayLoadScreen}>
                   <img src={folder_img} alt="transparent" />
                   <div>Load</div>
                 </button>
@@ -347,6 +357,22 @@ function TestApp() {
                 </button>
             </div>
           )}
+
+        <div className="modal" ref={loadScreenRef}>
+          <div className="modal-content">
+            <button className="close-btn" onClick={closeLoadScreen}>X</button>
+            <img src="https://via.placeholder.com/150" alt="Image 1" />
+            <img src="https://via.placeholder.com/150" alt="Image 2" />
+            <img src="https://via.placeholder.com/150" alt="Image 3" />
+            <img src="https://via.placeholder.com/150" alt="Image 4" />
+            <img src="https://via.placeholder.com/150" alt="Image 5" />
+            <img src="https://via.placeholder.com/150" alt="Image 1" />
+            <img src="https://via.placeholder.com/150" alt="Image 2" />
+            <img src="https://via.placeholder.com/150" alt="Image 3" />
+            <img src="https://via.placeholder.com/150" alt="Image 4" />
+            <img src="https://via.placeholder.com/150" alt="Image 5" />
+          </div>
+        </div>
       </div>
     </>
   )
