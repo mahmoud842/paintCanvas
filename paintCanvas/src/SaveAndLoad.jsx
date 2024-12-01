@@ -7,12 +7,14 @@ class SaveAndLoad {
     
     async save(shapes, canvas, jsonFlag){
         console.log(shapes)
+        let flag = true
         if (this.id == null)
-            await this.saveJsonWithoutID(shapes, jsonFlag)
+            flag = flag && await this.saveWithoutID(shapes, jsonFlag)
         else
-            await this.saveJsonWithID(shapes, jsonFlag)
+            flag = flag && await this.saveWithID(shapes, jsonFlag)
 
-        await this.sendCanvasImage(canvas)
+        flag = flag && await this.sendCanvasImage(canvas)
+        return flag
     }
 
     async loadDrawing(id){
@@ -27,7 +29,7 @@ class SaveAndLoad {
             });    
             if (response.ok) {
                 const result = await response.json();
-                console.log('Message sent successfully:', result);
+                console.log('Loaded successfully:', result);
                 this.id = id
                 return result
             } else {
@@ -97,16 +99,17 @@ class SaveAndLoad {
             // Handle the response
             if (response.ok) {
                 const result = await response.json();
-                console.log('Image sent successfully:', result);
+                return true
             } else {
                 console.error('Error sending image:', response.statusText);
             }
         } catch (error) {
             console.error('Network error:', error);
         }
+        return false
     }
 
-    async saveJsonWithoutID(shapes, jsonFlag){
+    async saveWithoutID(shapes, jsonFlag){
         const newMssg = new Message("tester name", shapes)
         console.log(newMssg)
         let url = 'http://localhost:8080/drawings'
@@ -128,17 +131,17 @@ class SaveAndLoad {
             if (response.ok) {
                 const result = await response.json();
                 this.id = result.id
-                console.log(this.id)
-                console.log('Message sent successfully:', result);
+                return true
             } else {
                 console.error('Error sending message:', response.statusText);
             }
         } catch (error) {
             console.error('Network error:', error);
         }
+        return false
     }
 
-    async saveJsonWithID(shapes, jsonFlag){
+    async saveWithID(shapes, jsonFlag){
         const newMssg = new Message("tester name", shapes)
         let url = 'http://localhost:8080/drawings/' + this.id
         if (jsonFlag)
@@ -158,13 +161,14 @@ class SaveAndLoad {
             });    
             if (response.ok) {
                 const result = await response.json();
-                console.log('Message sent successfully:', result);
+                return true
             } else {
                 console.error('Error sending message:', response.statusText);
             }
         } catch (error) {
             console.error('Network error:', error);
         }
+        return false
     }
 
 }
