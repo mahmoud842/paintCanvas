@@ -34,6 +34,7 @@ function TestApp() {
   const backgroundColorChangeRef = useRef(false)
 
   const loadScreenRef = useRef(null)
+  const [loadImages, setLoadImages] = useState([])
 
   const zoomLevelRef = useRef(1)
   const offSetRef = useRef([0,0])
@@ -41,7 +42,8 @@ function TestApp() {
   const isDragRef = useRef(false)
   const startDragRef = useRef([0,0])
 
-  const displayLoadScreen = () => {
+  const displayLoadScreen = async () => {
+    setLoadImages(await drawingRef.current.loadImages())
     loadScreenRef.current.style.display = 'flex';
   }
 
@@ -347,7 +349,9 @@ function TestApp() {
                   <img src={diskette_img} alt="transparent" />
                   <div>Save</div>
                 </button>
-                <button className="menu-item" onClick={displayLoadScreen}>
+                <button className="menu-item" onClick={async () => {
+                  displayLoadScreen()
+                }}>
                   <img src={folder_img} alt="transparent" />
                   <div>Load</div>
                 </button>
@@ -361,16 +365,14 @@ function TestApp() {
         <div className="modal" ref={loadScreenRef}>
           <div className="modal-content">
             <button className="close-btn" onClick={closeLoadScreen}>X</button>
-            <img src="https://via.placeholder.com/150" alt="Image 1" />
-            <img src="https://via.placeholder.com/150" alt="Image 2" />
-            <img src="https://via.placeholder.com/150" alt="Image 3" />
-            <img src="https://via.placeholder.com/150" alt="Image 4" />
-            <img src="https://via.placeholder.com/150" alt="Image 5" />
-            <img src="https://via.placeholder.com/150" alt="Image 1" />
-            <img src="https://via.placeholder.com/150" alt="Image 2" />
-            <img src="https://via.placeholder.com/150" alt="Image 3" />
-            <img src="https://via.placeholder.com/150" alt="Image 4" />
-            <img src="https://via.placeholder.com/150" alt="Image 5" />
+            { 
+              loadImages.map((obj, index) => (
+                <img key={index} src={`data:image/png;base64,${obj.image}`} onClick={async () => {
+                  await drawingRef.current.loadDrawing(obj.id)
+                  closeLoadScreen()
+                }} alt={`Image ${index}`} />
+              ))
+            }
           </div>
         </div>
       </div>
