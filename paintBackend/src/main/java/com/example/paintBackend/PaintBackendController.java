@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
@@ -42,10 +42,33 @@ public class PaintBackendController {
     }
 
     @PutMapping("/{id}/json")
-    public ResponseEntity<Map<String, Boolean>> updateDrawing(
+    public ResponseEntity<Map<String, Boolean>> updateDrawingJSON(
             @PathVariable String id,
             @RequestBody Drawing drawing) {
         if (saveToFileJSON(id, drawing)) {
+            return ResponseEntity.ok(Map.of("success", true));
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false));
+        }
+    }
+
+    @PostMapping("/xml")
+    public ResponseEntity<Map<String, Object>> saveDrawingXML(@RequestBody Drawing drawing) {
+        System.out.println("Received drawing: " + drawing.getName());
+        String uniqueId = UUID.randomUUID().toString();
+        if (saveToFileXML(uniqueId, drawing)) {
+            return ResponseEntity.ok(Map.of("success", true, "id", uniqueId));
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false));
+        }
+    }
+
+
+    @PutMapping("/{id}/xml")
+    public ResponseEntity<Map<String, Boolean>> updateDrawingXML(
+            @PathVariable String id,
+            @RequestBody Drawing drawing) {
+        if (saveToFileXML(id, drawing)) {
             return ResponseEntity.ok(Map.of("success", true));
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false));
@@ -125,14 +148,17 @@ public class PaintBackendController {
             return false;
         }
     }
+
     private boolean saveToFileXML(String id, Drawing drawing) {
-        ObjectMapper objectMapper = new ObjectMapper();
+        XmlMapper xmlMapper = new XmlMapper(); // For XML processing
         try {
-            String jsonString = objectMapper.writeValueAsString(drawing);
+            // Convert the Drawing object to an XML string
+            String xmlString = xmlMapper.writeValueAsString(drawing);
             Path filePath = dataDirectory.resolve(id + ".xml");
-            Files.write(filePath, jsonString.getBytes());
+            Files.write(filePath, xmlString.getBytes()); // Save the XML string to a file
             return true;
         } catch (IOException e) {
+            System.out.println("Received drawing: " + drawing.getName());
             e.printStackTrace();
             return false;
         }
