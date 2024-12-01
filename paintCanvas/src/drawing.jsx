@@ -202,10 +202,11 @@ class Drawing {
 
     deleteShape(){
         if (!this.selectMode || this.selectedShapeIdx == -1)
-            return
+            return false
         this.addShapesToUndo()
         this.shapes.splice(this.selectedShapeIdx, 1)
         this.selectedShape = null
+        return true
     }
 
     getSelectedShapeProperties(){
@@ -273,8 +274,12 @@ class Drawing {
         }
     }
 
-    async save(canvas) {
-        this.serverModule.save(this.shapes, canvas, true)
+    async save(canvas, flag) {
+        console.log(this.shapes)
+        if (this.serverModule.save(this.shapes, canvas, flag))
+            alert("saved successfully")
+        else
+            alert("failed to save")
     }
 
     async load(canvas) {
@@ -283,6 +288,7 @@ class Drawing {
 
     async loadDrawing(id) {
         const jsonObject = await this.serverModule.loadDrawing(id)
+        console.log(jsonObject)
         this.clearAll()
         
         this.shapes = this.shapeBuilder.createShapes(jsonObject.shapes)

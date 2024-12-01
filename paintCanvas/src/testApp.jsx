@@ -36,6 +36,8 @@ function TestApp() {
   const loadScreenRef = useRef(null)
   const [loadImages, setLoadImages] = useState([])
 
+  const saveMenuRef = useRef(null)
+
   const zoomLevelRef = useRef(1)
   const offSetRef = useRef([0,0])
   const altKeyRef = useRef(false)
@@ -114,8 +116,8 @@ function TestApp() {
   }
 
   const deleteShape = () => {
-    drawingRef.current.deleteShape()
-    hideSideBar()
+    if (drawingRef.current.deleteShape())
+      hideSideBar()
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
 
@@ -141,6 +143,14 @@ function TestApp() {
     drawingRef.current.clear()
     hideSideBar()
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+  }
+
+  const hideSaveMenu = () => {
+    saveMenuRef.current.style.display = 'none'
+  }
+
+  const showSaveMenu = () => {
+    saveMenuRef.current.style.display = 'block'
   }
 
   useEffect(() => {
@@ -332,10 +342,14 @@ function TestApp() {
                   <button className="action-button" onClick={deleteShape}>
                     <img src={delete_img} alt="transparent" />
                   </button>
-                  <button className="action-button" onClick={()=>{}}>
+                  <button className="action-button" onClick={()=>{
+                    drawingRef.current.copyCommand()
+                  }}>
                     <img src={copy_img} alt="transparent" />
                   </button>
-                  <button className="action-button" onClick={()=>{}}>
+                  <button className="action-button" onClick={()=>{
+                    drawingRef.current.cutCommand()
+                  }}>
                     <img src={cut_img} alt="transparent" />
                   </button>
                 </div>
@@ -370,7 +384,7 @@ function TestApp() {
             <div className="menu">
                 
                 <button className="menu-item" onClick={() => {
-                  drawingRef.current.save(canvasRef.current)
+                  showSaveMenu()
                 }}>
                   <img src={diskette_img} alt="transparent" />
                   <div>Save</div>
@@ -404,6 +418,19 @@ function TestApp() {
               ))
             }
           </div>
+        </div>
+
+        <div className="floating-box" ref={saveMenuRef}>
+          <button onClick={() => {
+            drawingRef.current.save(canvasRef.current, true)
+            hideSaveMenu()
+          }}>
+            Save as JSON
+          </button>
+          <button onClick={() => {
+            drawingRef.current.save(canvasRef.current, false)
+            hideSaveMenu()
+          }}>Save as XML</button>
         </div>
       </div>
     </>
