@@ -295,8 +295,21 @@ Modal Container
 
 /* Image Styling */
 .modal-content img {
-  max-width: 150px;
-  max-height: 150px;
+  max-width: 250px;
+  max-height: 200px;
   border-radius: 5px;
-  object-fit: cover;
+  margin: 5px;
+  /* object-fit: cover; */
+}
+
+.modal-content img:hover {
+  border: 5px solid rgb(214, 195, 195);
+  margin: 0px;
+}
+
+.modal-content div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
 }

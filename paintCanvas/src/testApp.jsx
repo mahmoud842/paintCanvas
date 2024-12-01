@@ -137,6 +137,12 @@ function TestApp() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const clear = () => {
+    drawingRef.current.clear()
+    hideSideBar()
+    renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+  }
+
   useEffect(() => {
     canvasRef.current.width = window.innerWidth
     canvasRef.current.height = window.innerHeight
@@ -293,10 +299,30 @@ function TestApp() {
               <div className="buttons-propertie">
                 <div className="propertie-type">Layer</div>
                 <div className='action-button-list'>
-                  <button className='action-button'><img src={down_arrow_wall} alt="transparent" /></button>
-                  <button className='action-button'><img src={down_arrow} alt="transparent" /></button>
-                  <button className='action-button'><img src={up_arrow} alt="transparent" /></button>
-                  <button className='action-button'><img src={up_arrow_wall} alt="transparent" /></button>
+                  <button className='action-button' onClick={() => {
+                    drawingRef.current.decToBotLayer()
+                    renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+                  }}>
+                    <img src={down_arrow_wall} alt="transparent" />
+                  </button>
+                  <button className='action-button' onClick={() => {
+                    drawingRef.current.decOneLayer()
+                    renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+                  }}>
+                    <img src={down_arrow} alt="transparent" />
+                  </button>
+                  <button className='action-button' onClick={() => {
+                    drawingRef.current.incOneLayer()
+                    renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+                  }}>
+                    <img src={up_arrow} alt="transparent" />
+                  </button>
+                  <button className='action-button' onClick={() => {
+                    drawingRef.current.incToTopLayer()
+                    renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+                  }}>
+                    <img src={up_arrow_wall} alt="transparent" />
+                  </button>
                 </div>
               </div>
               
@@ -355,7 +381,7 @@ function TestApp() {
                   <img src={folder_img} alt="transparent" />
                   <div>Load</div>
                 </button>
-                <button className="menu-item">
+                <button className="menu-item" onClick={clear}>
                   <img src={eraser_img} alt="transparent" />
                   <div>Clear</div>
                 </button>
@@ -367,10 +393,14 @@ function TestApp() {
             <button className="close-btn" onClick={closeLoadScreen}>X</button>
             { 
               loadImages.map((obj, index) => (
-                <img key={index} src={`data:image/png;base64,${obj.image}`} onClick={async () => {
-                  await drawingRef.current.loadDrawing(obj.id)
-                  closeLoadScreen()
-                }} alt={`Image ${index}`} />
+                <div key={index}>
+                  <img src={`data:image/png;base64,${obj.image}`} onClick={async () => {
+                    await drawingRef.current.loadDrawing(obj.id)
+                    closeLoadScreen()
+                    renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+                  }} alt={`Image ${index}`} />
+                  <p>{"obj.name"}</p>
+                </div>
               ))
             }
           </div>

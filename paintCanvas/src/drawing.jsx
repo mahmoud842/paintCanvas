@@ -240,6 +240,39 @@ class Drawing {
         this.deleteShape()
     }
 
+    clear() {
+        this.addShapesToUndo()
+        this.selectMode = true
+        this.isEditing = false
+        this.drawingMode = false
+        this.isDrawing = false
+
+        this.shapes = []
+        this.selectedShape = null
+        this.selectedShapeIdx = -1
+    }
+
+    clearAll() {
+        this.selectMode = false
+        this.isEditing = false
+        this.drawingMode = false
+        this.isDrawing = false
+        
+        this.shapesUndoStack = []
+        this.shapesRedoStack = []
+        this.shapes = []
+        this.selectedShape = null
+        this.selectedShapeIdx = -1
+
+        this.shapeClone = null
+
+        this.drawingProperties = {
+            color : '#000000',
+            BackgroundColor : 'transparent',
+            thickness : 4
+        }
+    }
+
     async save(canvas) {
         this.serverModule.save(this.shapes, canvas, true)
     }
@@ -250,33 +283,54 @@ class Drawing {
 
     async loadDrawing(id) {
         const jsonObject = await this.serverModule.loadDrawing(id)
-        this.selectMode = false
-        this.isEditing = false
-        this.drawingMode = false
-        this.isDrawing = false
+        this.clearAll()
         
-        this.shapesUndoStack = []
-        this.shapesRedoStack = []
         this.shapes = this.shapeBuilder.createShapes(jsonObject.shapes)
-        console.log(this.shapes)
-        this.selectedShape = null
-        this.selectedShapeIdx = -1
-
-        // variables for copy & paste
-        this.shapeClone = null
-
-        // default values
-        this.drawingProperties = {
-            color : '#000000',
-            BackgroundColor : 'transparent',
-            thickness : 4
-        }
     }
 
     async loadImages() {
         return await this.serverModule.loadImages()
     }
     
+    incOneLayer(){
+        this.addShapesToUndo()
+        if (this.selectedShapeIdx == this.shapes.length - 1)
+            return
+        let tmp = this.shapes[this.selectedShapeIdx + 1]
+        this.shapes[this.selectedShapeIdx + 1] = this.selectedShape
+        this.shapes[this.selectedShapeIdx] = tmp
+        this.selectedShapeIdx++
+    }
+
+    decOneLayer(){
+        this.addShapesToUndo()
+        if (this.selectedShapeIdx == 0)
+            return
+        let tmp = this.shapes[this.selectedShapeIdx - 1]
+        this.shapes[this.selectedShapeIdx - 1] = this.selectedShape
+        this.shapes[this.selectedShapeIdx] = tmp
+        this.selectedShapeIdx--
+    }
+
+    incToTopLayer(){
+        this.addShapesToUndo()
+        for (let i = this.selectedShapeIdx; i < this.shapes.length - 1; i++){
+            let tmp = this.shapes[this.selectedShapeIdx + 1]
+            this.shapes[this.selectedShapeIdx + 1] = this.selectedShape
+            this.shapes[this.selectedShapeIdx] = tmp
+            this.selectedShapeIdx++
+        }
+    }
+
+    decToBotLayer(){
+        this.addShapesToUndo()
+        for (let i = this.selectedShapeIdx; i > 0; i--){
+            let tmp = this.shapes[this.selectedShapeIdx - 1]
+            this.shapes[this.selectedShapeIdx - 1] = this.selectedShape
+            this.shapes[this.selectedShapeIdx] = tmp
+            this.selectedShapeIdx--
+        }
+    }
     
 }
 
