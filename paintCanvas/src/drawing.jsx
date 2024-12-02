@@ -53,14 +53,23 @@ class Drawing {
         if (this.selectedShape != null)
             this.selectedShape.unfocus()
         this.selectedShape = null
+        this.selectedShapeIdx = -1
     }
 
-    setSelectMode(x){
+    removeSelection(){
+        if (this.selectedShape != null)
+            this.selectedShape.unfocus()
+        this.selectedShape = null
+        this.selectedShapeIdx = -1
+    }
+
+    setSelectMode(){
         this.drawingMode = false
         this.selectMode = true
         if (this.selectedShape != null)
             this.selectedShape.unfocus()
         this.selectedShape = null
+        this.selectedShapeIdx = -1
     }
     
     getShapes(){
@@ -114,6 +123,7 @@ class Drawing {
         this.selectedShape.setColor(this.drawingProperties.color)
         this.selectedShape.setBackgroundColor(this.drawingProperties.BackgroundColor)
         this.selectedShape.setThickness(this.drawingProperties.thickness)
+        this.selectedShapeIdx = -1
     }
 
     checkSelection(x, y){
@@ -138,6 +148,7 @@ class Drawing {
                 else {
                     this.selectedShape.unfocus()
                     this.selectedShape = null
+                    this.selectedShapeIdx = -1
                 }
             }
             let newSelectedShape = this.checkSelection(x, y)

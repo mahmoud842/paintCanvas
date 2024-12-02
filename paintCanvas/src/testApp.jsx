@@ -102,6 +102,7 @@ function TestApp() {
     drawingRef.current.selectDrawingShape(shapeType)
     showSideBar()
     updateInputProperties()
+    renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
   }
 
   const selectMode = () => {
@@ -151,6 +152,8 @@ function TestApp() {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+    hideAllMenus()
+    drawingRef.current.removeSelection()
   };
 
   const clear = () => {
