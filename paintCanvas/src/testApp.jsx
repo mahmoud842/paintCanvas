@@ -234,6 +234,8 @@ function TestApp() {
         undo()
       }else if (e.ctrlKey && (e.key === 'y' || e.key === 'Y')){
         redo()
+      }else if (e.key === 'Delete'){
+        deleteShape()
       }
     }
 
