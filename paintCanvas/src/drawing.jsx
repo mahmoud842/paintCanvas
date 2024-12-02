@@ -1,7 +1,7 @@
 import Shape from './shapes/Shape'
 import ShapeFactory from './shapes/shapeFactory'
 import Message from './Message'
-import SaveAndLoad from './SaveAndLoad'
+import SaveAndLoad from './saveAndLoad'
 import ShapeBuilder from './shapes/shapeBuilder'
 
 class Drawing {
@@ -353,6 +353,16 @@ class Drawing {
             this.shapes[this.selectedShapeIdx] = tmp
             this.selectedShapeIdx--
         }
+    }
+
+    async saveToLocal(){
+        this.serverModule.saveFileToLocal(this.shapes)
+    }
+
+    async loadFromLocal(){
+        this.clearAll()
+        this.shapes = this.shapeBuilder.createShapes(await this.serverModule.loadFileFromLocal(this.shapes))
+        console.log(this.shapes)
     }
     
 }

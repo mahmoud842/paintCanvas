@@ -36,7 +36,9 @@ function TestApp() {
   const loadScreenRef = useRef(null)
   const [loadImages, setLoadImages] = useState([])
 
+  const loadMenuRef = useRef(null)
   const saveMenuRef = useRef(null)
+  const saveToServerMenu = useRef(null)
 
   const zoomLevelRef = useRef(1)
   const offSetRef = useRef([0,0])
@@ -151,6 +153,22 @@ function TestApp() {
 
   const showSaveMenu = () => {
     saveMenuRef.current.style.display = 'block'
+  }
+
+  const showSaveToServerMenu = () => {
+    saveToServerMenu.current.style.display = 'block'
+  }
+
+  const hideSaveToServerMenu = () => {
+    saveToServerMenu.current.style.display = 'none'
+  }
+
+  const hideLoadMenu = () => {
+    loadMenuRef.current.style.display = 'none'
+  }
+
+  const showLoadMenu = () => {
+    loadMenuRef.current.style.display = 'block'
   }
 
   useEffect(() => {
@@ -353,6 +371,7 @@ function TestApp() {
                   </button>
                   <button className="action-button" onClick={()=>{
                     drawingRef.current.cutCommand()
+                    renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
                   }}>
                     <img src={cut_img} alt="transparent" />
                   </button>
@@ -361,9 +380,12 @@ function TestApp() {
           </div>
           
           <div className='shapes-container'>
-            <button className='button' onClick={() => {
-              showSaveFilePicker()
-            }}>files</button>
+            {/* <button className='button' onClick={async () => {
+              await drawingRef.current.saveToLocal()
+            }}>save</button>
+            <button className='button' onClick={async () => {
+              await drawingRef.current.loadFromLocal()
+            }}>load</button> */}
             <button className='button' onClick={() => selectMode()}>select</button>
             <button className='button' onClick={() => selectShape("line")}>line</button>
             <button className='button' onClick={() => selectShape("square")}>square</button>
@@ -397,7 +419,7 @@ function TestApp() {
                   <div>Save</div>
                 </button>
                 <button className="menu-item" onClick={async () => {
-                  displayLoadScreen()
+                  showLoadMenu()
                 }}>
                   <img src={folder_img} alt="transparent" />
                   <div>Load</div>
@@ -420,23 +442,47 @@ function TestApp() {
                     closeLoadScreen()
                     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
                   }} alt={`Image ${index}`} />
-                  <p>{"obj.name"}</p>
                 </div>
               ))
             }
           </div>
         </div>
 
+        <div className="floating-box" ref={loadMenuRef}>
+          <button onClick={async () => {
+            await drawingRef.current.loadFromLocal()
+            hideLoadMenu()
+            renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+          }}>Load From Disk
+          </button>
+          <button onClick={async () => {
+            displayLoadScreen()
+            hideLoadMenu()
+          }}>Load From Cloud</button>
+        </div>
+
         <div className="floating-box" ref={saveMenuRef}>
+          <button onClick={async () => {
+            await drawingRef.current.saveToLocal()
+            hideSaveMenu()
+          }}>Save To Disk
+          </button>
+          <button onClick={async () => {
+            hideSaveMenu()
+            showSaveToServerMenu()
+          }}>Save To Cloud</button>
+        </div>
+
+        <div className="floating-box" ref={saveToServerMenu}>
           <button onClick={() => {
             drawingRef.current.save(canvasRef.current, true)
-            hideSaveMenu()
+            hideSaveToServerMenu()
           }}>
             Save as JSON
           </button>
           <button onClick={() => {
             drawingRef.current.save(canvasRef.current, false)
-            hideSaveMenu()
+            hideSaveToServerMenu()
           }}>Save as XML</button>
         </div>
       </div>
