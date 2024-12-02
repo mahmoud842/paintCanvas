@@ -12,7 +12,16 @@ import cut_img from './assets/scissors.png'
 import folder_img from './assets/folder.png'
 import eraser_img from './assets/eraser.png'
 import diskette_img from './assets/diskette.png'
+import circle_img from './assets/circle.png'
+import line_img from './assets/line.png'
+import elipse_img from './assets/ellipse.png'
+import triangle_img from './assets/triangle.png'
+import square_img from './assets/stop.png'
+import rectangle_img from './assets/rounded-rectangle.png'
+import draw_img from './assets/pencil.png'
 import select_img from './assets/cursor.png'
+import undo_img from './assets/undo.png'
+import redo_img from './assets/forward.png'
 
 
 function TestApp() {
