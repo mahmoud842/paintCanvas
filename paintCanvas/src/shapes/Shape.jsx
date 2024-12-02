@@ -3,6 +3,7 @@ class Shape {
         // start and end are only used when drawing the shape for the first time
         this.start = null
         this.end = null
+        this.borderPoint = [[0, 0], [0, 0], [0, 0], [0, 0]]
         this.center = [0, 0]
         this.color = '#000000'
         this.backgroundColor = 'transparent'

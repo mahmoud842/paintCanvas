@@ -212,6 +212,7 @@ class HandWrite extends Shape{
 
         copy.name = this.name
         copy.points = JSON.parse(JSON.stringify(this.points))
+        copy.borderPoint = JSON.parse(JSON.stringify(this.borderPoint))
         copy.maxima = [...this.maxima]
         copy.minima = [...this.minima]
         copy.border1 = [...this.border1]
@@ -222,24 +223,33 @@ class HandWrite extends Shape{
     }
 
     giveData(data){
-        this.start = data.start
-        this.end = data.end
-        this.center = data.center
+        this.start = data.start.map(Number)
+        this.end = data.end.map(Number)
+        this.center = data.center.map(Number)
         this.color = data.color
         this.backgroundColor = data.backgroundColor
-        this.thickness = data.thickness
+        this.thickness = Number(data.thickness)
         this.focused = false
         this.editMode = -1
-        this.name = data.name
+        this.borderPoint = data.borderPoint
 
         this.name = data.name
-        this.points = data.points
-        this.maxima = data.maxima
-        this.minima = data.minima
-        this.border1 = data.border1
-        this.border2 = data.border2
-        this.pPoint = data.pPoint
-        this.angle = data.angle
+        if (Array.isArray(data.points[0]))
+            this.points = data.points.map(innerArray => innerArray.map(Number))
+        else {
+            let tmpArr = []
+            for (let j = 0; j < data.points.length-1; j+=2){
+                tmpArr.push([Number(data.points[j]), Number(data.points[j+1])])
+            }
+            this.points = tmpArr
+        }
+        
+        this.maxima = data.maxima.map(Number)
+        this.minima = data.minima.map(Number)
+        this.border1 = data.border1.map(Number)
+        this.border2 = data.border2.map(Number)
+        this.pPoint = data.pPoint.map(Number)
+        this.angle = Number(data.angle)
     }
 }
 

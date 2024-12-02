@@ -166,8 +166,7 @@ class Triangle extends Shape {
         copy.thickness = this.thickness
         copy.focused = false
         copy.editMode = -1
-        copy.name = this.name
-
+        copy.borderPoint = JSON.parse(JSON.stringify(this.borderPoint))
         copy.name = this.name
         copy.v1 = [...this.v1]
         copy.v2 = [...this.v2]
@@ -176,20 +175,19 @@ class Triangle extends Shape {
     }
 
     giveData(data){
-        this.start = data.start
-        this.end = data.end
-        this.center = data.center
+        this.start = data.start.map(Number)
+        this.end = data.end.map(Number)
+        this.center = data.center.map(Number)
         this.color = data.color
         this.backgroundColor = data.backgroundColor
-        this.thickness = data.thickness
+        this.thickness = Number(data.thickness)
         this.focused = false
         this.editMode = -1
         this.name = data.name
-    
-        this.name = data.name
-        this.v1 = data.v1
-        this.v2 = data.v2
-        this.v3 = data.v3
+        this.borderPoint = data.borderPoint
+        this.v1 = data.v1.map(Number)
+        this.v2 = data.v2.map(Number)
+        this.v3 = data.v3.map(Number)
     }
 }
 

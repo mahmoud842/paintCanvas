@@ -4,7 +4,6 @@ class Ellipse extends Shape{
     constructor() {
         super();
         this.name = "Ellipse"
-        this.borderPoint = []
         this.rx = 0;
         this.ry = 0;
         this.rotation = 0;
@@ -262,23 +261,23 @@ class Ellipse extends Shape{
     }
 
     giveData(data){
-        this.start = data.start
-        this.end = data.end
+        this.start = data.start.map(Number)
+        this.end = data.end.map(Number)
         this.color = data.color
         this.backgroundColor = data.backgroundColor
-        this.thickness = data.thickness
+        this.thickness = Number(data.thickness)
         this.focused = false
         this.editMode = -1
         this.name = data.name
-
+        
         this.borderPoint = data.borderPoint
-        this.centerx = data.centerx
-        this.centery = data.centery
-        this.rx = data.rx
-        this.ry = data.ry
-        this.startaAngle = data.startaAngle
-        this.rotation = data.rotation
-        this.pPoint = data.pPoint
+        this.centerx = Number(data.centerx)
+        this.centery = Number(data.centery)
+        this.rx = Number(data.rx)
+        this.ry = Number(data.ry)
+        this.startaAngle = Number(data.startaAngle)
+        this.rotation = Number(data.rotation)
+        this.pPoint = data.pPoint.map(Number)
     }
 }
 

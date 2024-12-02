@@ -290,8 +290,25 @@ class Drawing {
         const jsonObject = await this.serverModule.loadDrawing(id)
         console.log(jsonObject)
         this.clearAll()
+        if (!Array.isArray(jsonObject.shapes)){
+            jsonObject.shapes = [jsonObject.shapes]
+        }
+
+        for (let i = 0; i < jsonObject.shapes.length; i++){
+            if (jsonObject.shapes[i].borderPoint.length == 8){
+                let tmpArr = []
+                for (let j = 0; j < jsonObject.shapes[i].borderPoint.length-1; j+=2){
+                    tmpArr.push([Number(jsonObject.shapes[i].borderPoint[j]), Number(jsonObject.shapes[i].borderPoint[j+1])])
+                }
+                jsonObject.shapes[i].borderPoint = tmpArr
+            }
+            else break
+        }
         
+        console.log("hohoho")
+        console.log(jsonObject)
         this.shapes = this.shapeBuilder.createShapes(jsonObject.shapes)
+        console.log(this.shapes)
     }
 
     async loadImages() {

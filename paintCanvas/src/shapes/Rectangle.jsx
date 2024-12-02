@@ -5,7 +5,6 @@ class Rectangle extends Shape {
     constructor() {
         super()
         this.name = "Rectangle"
-        this.borderPoint = []
         this.center = [0, 0]
         this.width = 1
         this.height = 1
@@ -250,22 +249,22 @@ class Rectangle extends Shape {
     }
 
     giveData(data){
-        this.start = data.start
-        this.end = data.end
-        this.center = data.center
+        this.start = data.start.map(Number)
+        this.end = data.end.map(Number)
+        this.center = data.center.map(Number)
         this.color = data.color
         this.backgroundColor = data.backgroundColor
-        this.thickness = data.thickness
+        this.thickness = Number(data.thickness)
         this.focused = false
         this.editMode = -1
         this.name = data.name
 
         this.borderPoint = data.borderPoint
-        this.center = data.center
-        this.width = data.width
-        this.height = data.height
-        this.angle = data.angle
-        this.pPoint = data.pPoint
+        this.center = data.center.map(Number)
+        this.width = Number(data.width)
+        this.height = Number(data.height)
+        this.angle = Number(data.angle)
+        this.pPoint = data.pPoint.map(Number)
     }
 }
 

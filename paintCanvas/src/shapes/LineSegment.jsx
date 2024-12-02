@@ -96,6 +96,7 @@ class Line extends Shape {
 
     clone(){
         const copy = new this.constructor();
+        copy.borderPoint = JSON.parse(JSON.stringify(this.borderPoint))
         copy.start = [...this.start]
         copy.end = [...this.end]
         copy.center = [...this.center]
@@ -109,12 +110,13 @@ class Line extends Shape {
     }
 
     giveData(data){
-        this.start = data.start
-        this.end = data.end
-        this.center = data.center
+        this.start = data.start.map(Number)
+        this.end = data.end.map(Number)
+        this.center = data.center.map(Number)
         this.color = data.color
         this.backgroundColor = data.backgroundColor
-        this.thickness = data.thickness
+        this.borderPoint = data.borderPoint
+        this.thickness = Number(data.thickness)
         this.focused = false
         this.editMode = -1
         this.name = data.name
