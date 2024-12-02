@@ -12,7 +12,7 @@ import cut_img from './assets/scissors.png'
 import folder_img from './assets/folder.png'
 import eraser_img from './assets/eraser.png'
 import diskette_img from './assets/diskette.png'
-
+import select_img from './assets/cursor.png'
 
 
 function TestApp() {
@@ -389,22 +389,16 @@ function TestApp() {
           </div>
           
           <div className='shapes-container'>
-            {/* <button className='button' onClick={async () => {
-              await drawingRef.current.saveToLocal()
-            }}>save</button>
-            <button className='button' onClick={async () => {
-              await drawingRef.current.loadFromLocal()
-            }}>load</button> */}
-            <button className='button' onClick={() => selectMode()}>select</button>
-            <button className='button' onClick={() => selectShape("line")}>line</button>
-            <button className='button' onClick={() => selectShape("square")}>square</button>
-            <button className='button' onClick={() => selectShape("rectangle")}>rectangle</button>
-            <button className='button' onClick={() => selectShape("circle")}>circle</button>
-            <button className='button' onClick={() => selectShape("ellipse")}>ellipse</button>
-            <button className='button' onClick={() => selectShape("triangle")}>triangle</button>
-            <button className='button' onClick={() => selectShape("draw")}>draw</button>
-            <button className='button'  onClick={undo}>undo</button>
-            <button className='button'  onClick={redo}>redo</button>
+            <button className='button' onClick={() => selectMode()}><img src={select_img} /></button>
+            <button className='button' onClick={() => selectShape("line")}><img src={select_img} /></button>
+            <button className='button' onClick={() => selectShape("square")}><img src={select_img} /></button>
+            <button className='button' onClick={() => selectShape("rectangle")}><img src={select_img} /></button>
+            <button className='button' onClick={() => selectShape("circle")}><img src={select_img} /></button>
+            <button className='button' onClick={() => selectShape("ellipse")}><img src={select_img} /></button>
+            <button className='button' onClick={() => selectShape("triangle")}><img src={select_img} /></button>
+            <button className='button' onClick={() => selectShape("draw")}><img src={select_img} /></button>
+            <button className='button' onClick={undo}><img src={select_img} /></button>
+            <button className='button' onClick={redo}><img src={select_img} /></button>
           </div>
           <canvas ref={canvasRef} id="canvas"></canvas>
 
