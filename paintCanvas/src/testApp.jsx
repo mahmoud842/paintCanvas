@@ -212,6 +212,10 @@ function TestApp() {
       else if (e.ctrlKey && (e.key === 'x' || e.key === 'X')){
         drawingRef.current.cutCommand()
         renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+      }else if (e.ctrlKey && (e.key === 'z' || e.key === 'Z')){
+        undo()
+      }else if (e.ctrlKey && (e.key === 'y' || e.key === 'Y')){
+        redo()
       }
     }
 
