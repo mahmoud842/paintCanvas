@@ -206,6 +206,7 @@ class Drawing {
         this.addShapesToUndo()
         this.shapes.splice(this.selectedShapeIdx, 1)
         this.selectedShape = null
+        this.selectedShapeIdx = -1
         return true
     }
 

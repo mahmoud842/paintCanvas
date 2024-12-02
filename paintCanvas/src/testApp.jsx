@@ -97,6 +97,7 @@ function TestApp() {
   }
 
   const selectShape = (shapeType) => {
+    hideAllMenus()
     drawingRef.current.setDrawingMode()
     drawingRef.current.selectDrawingShape(shapeType)
     showSideBar()
@@ -104,6 +105,7 @@ function TestApp() {
   }
 
   const selectMode = () => {
+    hideAllMenus()
     drawingRef.current.setSelectMode()
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
     hideSideBar()
@@ -194,6 +196,8 @@ function TestApp() {
     drawingRef.current = new Drawing()
 
     const mouseDown = (e) => {
+      setIsMenuOpen(false)
+      hideAllMenus()
       let [mouseX, mouseY] = [e.offsetX, e.offsetY]
       if (altKeyRef.current){
         isDragRef.current = true
@@ -303,6 +307,7 @@ function TestApp() {
   return (
     <>
       <div className='page'>
+          <canvas ref={canvasRef} id="canvas"></canvas>
           <div ref={sidebarRef} className='side-bar'>
               <div className="propertie-list">
                 <div className="propertie-type">Color:</div>
@@ -409,7 +414,6 @@ function TestApp() {
             <button className='button' onClick={undo}><img src={undo_img} /></button>
             <button className='button' onClick={redo}><img src={redo_img} /></button>
           </div>
-          <canvas ref={canvasRef} id="canvas"></canvas>
 
           <button className="menu-toggle-button" onClick={toggleMenu}>
             {/* Menu icon */}
