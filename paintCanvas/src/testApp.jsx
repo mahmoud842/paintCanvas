@@ -216,6 +216,8 @@ function TestApp() {
         undo()
       }else if (e.ctrlKey && (e.key === 'y' || e.key === 'Y')){
         redo()
+      }else if (e.key === 'Delete'){
+        deleteShape()
       }
     }
 
@@ -361,9 +363,6 @@ function TestApp() {
           </div>
           
           <div className='shapes-container'>
-            <button className='button' onClick={() => {
-              showSaveFilePicker()
-            }}>files</button>
             <button className='button' onClick={() => selectMode()}>select</button>
             <button className='button' onClick={() => selectShape("line")}>line</button>
             <button className='button' onClick={() => selectShape("square")}>square</button>
