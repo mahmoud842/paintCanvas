@@ -14,6 +14,7 @@ import eraser_img from './assets/eraser.png'
 import diskette_img from './assets/diskette.png'
 
 
+
 function TestApp() {
 
   const canvasRef = useRef(null)
@@ -145,6 +146,12 @@ function TestApp() {
     drawingRef.current.clear()
     hideSideBar()
     renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
+  }
+
+  const hideAllMenus = () => {
+    hideSaveMenu()
+    hideSaveToServerMenu()
+    hideLoadMenu()
   }
 
   const hideSaveMenu = () => {
@@ -415,12 +422,14 @@ function TestApp() {
             <div className="menu">
                 
                 <button className="menu-item" onClick={() => {
+                  hideAllMenus()
                   showSaveMenu()
                 }}>
                   <img src={diskette_img} alt="transparent" />
                   <div>Save</div>
                 </button>
                 <button className="menu-item" onClick={async () => {
+                  hideAllMenus()
                   showLoadMenu()
                 }}>
                   <img src={folder_img} alt="transparent" />
@@ -453,24 +462,24 @@ function TestApp() {
         <div className="floating-box" ref={loadMenuRef}>
           <button onClick={async () => {
             await drawingRef.current.loadFromLocal()
-            hideLoadMenu()
+            hideAllMenus()
             renderCanva(canvaContextRef.current, drawingRef.current.getShapes())
           }}>Load From Disk
           </button>
           <button onClick={async () => {
             displayLoadScreen()
-            hideLoadMenu()
+            hideAllMenus()
           }}>Load From Cloud</button>
         </div>
 
         <div className="floating-box" ref={saveMenuRef}>
           <button onClick={async () => {
             await drawingRef.current.saveToLocal()
-            hideSaveMenu()
+            hideAllMenus()
           }}>Save To Disk
           </button>
           <button onClick={async () => {
-            hideSaveMenu()
+            hideAllMenus()
             showSaveToServerMenu()
           }}>Save To Cloud</button>
         </div>
@@ -478,13 +487,13 @@ function TestApp() {
         <div className="floating-box" ref={saveToServerMenu}>
           <button onClick={() => {
             drawingRef.current.save(canvasRef.current, true)
-            hideSaveToServerMenu()
+            hideAllMenus()
           }}>
             Save as JSON
           </button>
           <button onClick={() => {
             drawingRef.current.save(canvasRef.current, false)
-            hideSaveToServerMenu()
+            hideAllMenus()
           }}>Save as XML</button>
         </div>
       </div>
