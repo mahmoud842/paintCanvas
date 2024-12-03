@@ -1,3 +1,2 @@
 # PaintCanvas
 
-## Design Choices

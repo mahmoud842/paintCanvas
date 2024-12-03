@@ -1,7 +1,7 @@
 import Shape from './shapes/Shape'
 import ShapeFactory from './shapes/shapeFactory'
 import Message from './Message'
-import SaveAndLoad from './saveAndLoad'
+import SaveAndLoad from './SaveAndLoad'
 import ShapeBuilder from './shapes/shapeBuilder'
 
 class Drawing {
